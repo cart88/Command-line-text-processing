@@ -1,57 +1,57 @@
 # <a name="gnu-sed"></a>GNU sed
 
-**Table of Contents**
+**目录**
 
-* [Simple search and replace](#simple-search-and-replace)
-    * [editing stdin](#editing-stdin)
-    * [editing file input](#editing-file-input)
-* [Inplace file editing](#inplace-file-editing)
-    * [With backup](#with-backup)
-    * [Without backup](#without-backup)
-    * [Multiple files](#multiple-files)
-    * [Prefix backup name](#prefix-backup-name)
-    * [Place backups in directory](#place-backups-in-directory)
-* [Line filtering options](#line-filtering-options)
-    * [Print command](#print-command)
-    * [Delete command](#delete-command)
-    * [Quit commands](#quit-commands)
-    * [Negating REGEXP address](#negating-regexp-address)
-    * [Combining multiple REGEXP](#combining-multiple-regexp)
-    * [Filtering by line number](#filtering-by-line-number)
-    * [Print only line number](#print-only-line-number)
-    * [Address range](#address-range)
-    * [Relative addressing](#relative-addressing)
-* [Using different delimiter for REGEXP](#using-different-delimiter-for-regexp)
-* [Regular Expressions](#regular-expressions)
-    * [Line Anchors](#line-anchors)
-    * [Word Anchors](#word-anchors)
-    * [Matching the meta characters](#matching-the-meta-characters)
-    * [Alternation](#alternation)
-    * [The dot meta character](#the-dot-meta-character)
-    * [Quantifiers](#quantifiers)
-    * [Character classes](#character-classes)
-    * [Escape sequences](#escape-sequences)
-    * [Grouping](#grouping)
-    * [Back reference](#back-reference)
-    * [Changing case](#changing-case)
-* [Substitute command modifiers](#substitute-command-modifiers)
-    * [g modifier](#g-modifier)
-    * [Replace specific occurrence](#replace-specific-occurrence)
-    * [Ignoring case](#ignoring-case)
-    * [p modifier](#p-modifier)
-    * [w modifier](#w-modifier)
-    * [e modifier](#e-modifier)
-    * [m modifier](#m-modifier)
-* [Shell substitutions](#shell-substitutions)
-    * [Variable substitution](#variable-substitution)
-    * [Command substitution](#command-substitution)
-* [z and s command line options](#z-and-s-command-line-options)
-* [change command](#change-command)
-* [insert command](#insert-command)
-* [append command](#append-command)
-* [adding contents of file](#adding-contents-of-file)
-    * [r for entire file](#r-for-entire-file)
-    * [R for line by line](#r-for-line-by-line)
+* [简单查找替换](#简单查找替换)
+    * [编辑标准输入](#编辑标准输入)
+    * [编辑文件输入](#编辑文件输入)
+* [文件内编辑](#文件内编辑)
+    * [备份](#备份)
+    * [不用备份](#不用备份)
+    * [多文件](#多文件)
+    * [备份前缀](#备份前缀)
+    * [把备份放到文件夹中](#把备份放到文件夹中)
+* [按行过滤的选项](#按行过滤的选项)
+    * [打印命令](#打印命令)
+    * [删除命令](#删除命令)
+    * [退出命令](#退出命令)
+    * [地址取反正则表达式](#地址取反正则表达式)
+    * [绑定多个表达式](#绑定多个表达式)
+    * [按行号过滤](#按行号过滤)
+    * [只打印行号](#只打印行号)
+    * [地址范围](#地址范围)
+    * [相对地址](#相对地址)
+* [在正则中使用不同的分隔符](#在正则中使用不同的分隔符)
+* [正则表达式](#正则表达式)
+    * [行锚点](#行锚点)
+    * [单词锚点](#单词锚点)
+    * [匹配元字符](#匹配元字符)
+    * [逻辑或](#逻辑或)
+    * [点元字符](#点元字符)
+    * [多倍性](#多倍性)
+    * [字符相关](#字符相关)
+    * [转移字符](#转移字符)
+    * [分组](#分组)
+    * [逆参照](#逆参照)
+    * [大小写转换](#大小写转换)
+* [替换命令修改选项](#替换命令修改选项)
+    * [g选项](#g选项)
+    * [替换指定的次数](#替换指定的次数)
+    * [iI选项-忽略大小写](#iI选项-忽略大小写)
+    * [p选项-输出](#p选项-输出)
+    * [w选项-输出到文件](#w选项-输出到文件)
+    * [e选项-替换编辑行](#e选项-替换编辑行)
+    * [m-选项](#m-选项)
+* [脚本替换](#脚本替换)
+    * [变量替换](#变量替换)
+    * [命令替换](#命令替换)
+* [z和s命令](#z和s命令)
+* [修改命令](#修改命令)
+* [插入命令](#插入命令)
+* [追加命令](#追加命令)
+* [添加文件内容](#添加文件内容)
+    * [r命令插入整个文件](#r命令插入整个文件)
+    * [r命令逐行插入](#r命令逐行插入)
 * [n and N commands](#n-and-n-commands)
 * [Control structures](#control-structures)
     * [if then else](#if-then-else)
@@ -91,65 +91,66 @@ DESCRIPTION
 ...
 ```
 
-**Note:** [Multiline and manipulating pattern space](https://www.gnu.org/software/sed/manual/sed.html#Multiline-techniques) with h,x,D,G,H,P etc is not covered in this chapter and examples/information is based on ASCII encoded text input only
+**注意:** [Multiline and manipulating pattern space](https://www.gnu.org/software/sed/manual/sed.html#Multiline-techniques) with h,x,D,G,H,P etc is not covered in this chapter and examples/information is based on ASCII encoded text input only
 
 <br>
 
-## <a name="simple-search-and-replace"></a>Simple search and replace
+## <a name="简单查找替换"></a>简单查找替换
 
-Detailed examples for **substitute** command will be convered in later sections, syntax is
+详细的**substitute**替换命令例子在以后的章节中提供, 语法是：
 
 ```
 s/REGEXP/REPLACEMENT/FLAGS
 ```
 
-The `/` character is idiomatically used as delimiter character. See also [Using different delimiter for REGEXP](#using-different-delimiter-for-regexp)
+`/`字符通常当作分割符使用. See also [在正则中使用不同的分隔符](#在正则中使用不同的分隔符)
 
 <br>
 
-#### <a name="editing-stdin"></a>editing stdin
+#### <a name="编辑标准输入"></a>编辑标准输入
 
 ```bash
-$ # sample command output to be edited
+$ # 要被编辑的命令
 $ seq 10 | paste -sd,
 1,2,3,4,5,6,7,8,9,10
 
-$ # change only first ',' to ' : '
+$ # 只把第一个 ',' 换成 ' : '
 $ seq 10 | paste -sd, | sed 's/,/ : /'
 1 : 2,3,4,5,6,7,8,9,10
 
-$ # change all ',' to ' : ' by using 'g' modifier
+$ # 只把所有的 ',' 换成 ' : '
 $ seq 10 | paste -sd, | sed 's/,/ : /g'
 1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 : 9 : 10
 ```
 
-**Note:** As a good practice, all examples use single quotes around arguments to prevent shell interpretation. See [Shell substitutions](#shell-substitutions) section on use of double quotes
+**注意:** 作为一个好的实践, 所有使用带引号的参数都会妨碍脚本翻译. 见 [脚本替换](#脚本替换) 章节使用双引号
 
 <br>
 
-#### <a name="editing-file-input"></a>editing file input
+#### <a name="编辑文件输入"></a>编辑文件输入
 
-* By default newline character is the line separator
-* See [Regular Expressions](#regular-expressions) section for qualifying search terms, for ex
-    * word boundaries to distinguish between 'hi', 'this', 'his', 'history', etc
-    * multiple search terms, specific set of character, etc
+* 换行符是默认的行分割标准
+* 见 [正则表达式](#正则表达式) 节确定搜索的词汇, 例如
+    * 单词的边界区分 'hi', 'this', 'his', 'history', 等
+    * 查找多个单词, 指定一系列字符,等
 
 ```bash
 $ cat greeting.txt
 Hi there
 Have a nice day
 
-$ # change first 'e' in each line to 'E'
+$ # 每行第一个 'e' 改为 'E'
 $ sed 's/e/E/' greeting.txt
 Hi thEre
 HavE a nice day
 
 $ # change first 'nice day' in each line to 'safe journey'
+$ # 每行第一个 'enice day' 改为 'safe journey'
 $ sed 's/nice day/safe journey/' greeting.txt
 Hi there
 Have a safe journey
 
-$ # change all 'e' to 'E' and save changed text to another file
+$ # 所有 'e' 改为 'E'保存到另外一个文件
 $ sed 's/e/E/g' greeting.txt > out.txt
 $ cat out.txt
 Hi thErE
@@ -158,31 +159,30 @@ HavE a nicE day
 
 <br>
 
-## <a name="inplace-file-editing"></a>Inplace file editing
+## <a name="文件内编辑"></a>文件内编辑
 
-* In previous section, the output from `sed` was displayed on stdout or saved to another file
-* To write the changes back to original file, use `-i` option
+* 之前的章节, `sed` 的输出直接显示或保存在一个文件
+* 会写文件的改变,使用 `-i` 选项
 
-**Note**:
+**注意**:
 
-* Refer to `man sed` for details of how to use the `-i` option. It varies with different `sed` implementations. As mentioned at start of this chapter, `sed (GNU sed) 4.2.2` is being used here
-* See also [unix.stackexchange - working with symlinks](https://unix.stackexchange.com/questions/348693/sed-update-etc-grub-conf-in-spite-this-link-file)
+* 到`man sed` 有如何使用`-i`选项. 根据`sed` 的不同实现不同.这列使用`sed (GNU sed) 4.2.2`
+* 见[unix.stackexchange - working with symlinks](https://unix.stackexchange.com/questions/348693/sed-update-etc-grub-conf-in-spite-this-link-file)
 
 <br>
 
-#### <a name="with-backup"></a>With backup
+#### <a name="备份"></a>备份
 
-* When extension is given, the original input file is preserved with name changed according to extension provided
+* 档有扩展名,原来的文件根据给的扩展名备份
 
 ```bash
-$ # '.bkp' is extension provided
+$ # '.bkp'是提供的扩展名
 $ sed -i.bkp 's/Hi/Hello/' greeting.txt
-$ # output from sed is written back to 'greeting.txt'
+$ # sed 备份原来的greeting.txt到 'greeting.txt.bkp'
 $ cat greeting.txt
 Hello there
 Have a nice day
 
-$ # original file is preserved in 'greeting.txt.bkp'
 $ cat greeting.txt.bkp
 Hi there
 Have a nice day
@@ -190,9 +190,9 @@ Have a nice day
 
 <br>
 
-#### <a name="without-backup"></a>Without backup
+#### <a name="不用备份"></a>不用备份
 
-* Use this option with caution, changes made cannot be undone
+* 这样使用请注意,修改无法取消
 
 ```bash
 $ sed -i 's/nice day/safe journey/' greeting.txt
@@ -205,9 +205,9 @@ Have a safe journey
 
 <br>
 
-#### <a name="multiple-files"></a>Multiple files
+#### <a name="多文件"></a>多文件
 
-* Multiple input files are treated individually and changes are written back to respective files
+* 每个文件当作单独文件对待,修改也分布写回各自文件
 
 ```bash
 $ cat f1
@@ -215,7 +215,7 @@ I ate 3 apples
 $ cat f2
 I bought two bananas and 3 mangoes
 
-$ # -i can be used with or without backup
+$ # -i 可以使用 不用备份
 $ sed -i 's/3/three/' f1 f2
 $ cat f1
 I ate three apples
@@ -225,10 +225,10 @@ I bought two bananas and three mangoes
 
 <br>
 
-#### <a name="prefix-backup-name"></a>Prefix backup name
+#### <a name="备份前缀"></a>备份前缀
 
-* A `*` in argument given to `-i` will get expanded to input filename
-* This way, one can add prefix instead of suffix for backup
+* `-i`选项后面的 `*` 参数被展开成输入的文件名
+* 这样,可以为备份添加前后缀
 
 ```bash
 $ cat var.txt
@@ -250,9 +250,9 @@ baz
 
 <br>
 
-#### <a name="place-backups-in-directory"></a>Place backups in directory
+#### <a name="把备份放到文件夹中"></a>把备份放到文件夹中
 
-* `*` also allows to specify an existing directory to place the backups instead of current working directory
+* `*` 也运行指定一个目录放备份
 
 ```bash
 $ mkdir bkp_dir
@@ -275,21 +275,21 @@ $ # bkp_dir/bkp.*.2017 for both and so on
 
 <br>
 
-## <a name="line-filtering-options"></a>Line filtering options
+## <a name="按行过滤的选项"></a>按行过滤的选项
 
-* By default, `sed` acts on entire file. Often, one needs to extract or change only specific lines based on text search, line numbers, lines between two patterns, etc
-* This filtering is much like using `grep`, `head` and `tail` commands in many ways and there are even more features
-    * Use `sed` for inplace editing, the filtered lines to be transformed etc. Not as substitute for those commands
+* 默认`sed` 作用于整个文件. 根据文件查找的结果,行号或两个模式匹配中间的行,只修改某些指定的行很常见
+* 这个过滤器像`grep`, `head` and `tail` 等命令,但是有更多的功能
+    * TODO:: ? Use `sed` for inplace editing, the filtered lines to be transformed etc. Not as substitute for those commands
 
 <br>
 
-#### <a name="print-command"></a>Print command
+#### <a name="打印命令"></a>打印命令
 
-* It is usually used in conjunction with `-n` option
-* By default, `sed` prints every input line, including any changes made by commands like substitution
-    * printing here refers to line being part of `sed` output which may be shown on terminal, redirected to file, etc
-* Using `-n` option and `p` command together, only specific lines needed can be filtered
-* Examples below use the `/REGEXP/` addressing, other forms will be seen in sections to follow
+* 通常打印命令和 `-n` 选项连用
+* `sed` 默认打印输入文件被修改后的最后结果
+    * 打印这里指在终端显示,重定向到文件
+* 一起用`-n`和`p`, 只显示被影响的那些行
+* 以下例子使用`/REGEXP/`正则表达式地址
 
 ```bash
 $ cat poem.txt
@@ -298,35 +298,36 @@ Violets are blue,
 Sugar is sweet,
 And so are you.
 
-$ # all lines containing the string 'are'
-$ # same as: grep 'are' poem.txt
+$ # 所有包含'are'的行
+$ # 同: grep 'are' poem.txt
 $ sed -n '/are/p' poem.txt
 Roses are red,
 Violets are blue,
 And so are you.
 
 $ # all lines containing the string 'so are'
-$ # same as: grep 'so are' poem.txt
+$ # 所有包含'so are'的行
+$ # 同: grep 'so are' poem.txt
 $ sed -n '/so are/p' poem.txt
 And so are you.
 ```
 
-* Using print and substitution together
+* 一起使用打印和替换
 
 ```bash
-$ # print only lines on which substitution happens
+$ # 只打印有替换的行
 $ sed -n 's/are/ARE/p' poem.txt
 Roses ARE red,
 Violets ARE blue,
 And so ARE you.
 
-$ # if line contains 'are', perform given command
-$ # print only if substitution succeeds
+$ # 如果行中包含'are', 执行替换操作
+$ # 如果替换成功就打印
 $ sed -n '/are/ s/so/SO/p' poem.txt
 And SO are you.
 ```
 
-* Duplicating every input line
+* 重复输入文件的每一行
 
 ```bash
 $ # note, -n is not used and no filtering applied
@@ -341,17 +342,17 @@ $ seq 3 | sed 'p'
 
 <br>
 
-#### <a name="delete-command"></a>Delete command
+#### <a name="删除命令"></a>删除命令
 
-* By default, `sed` prints every input line, including any changes like substitution
-* Using the `d` command, those specific lines will NOT be printed
+* `sed` 默认打印输入文件的修改结果
+* 用`d` 命令, 删除的行不被显示
 
 ```bash
-$ # same as: grep -v 'are' poem.txt
+$ # 同: grep -v 'are' poem.txt
 $ sed '/are/d' poem.txt
 Sugar is sweet,
 
-$ # same as: seq 5 | grep -v '3'
+$ # 同: seq 5 | grep -v '3'
 $ seq 5 | sed '/3/d'
 1
 2
@@ -359,11 +360,11 @@ $ seq 5 | sed '/3/d'
 5
 ```
 
-* Modifier `I` allows to filter lines in case-insensitive way
-* See [Regular Expressions](#regular-expressions) section for more details
+* `I` 选项运行用大小写敏感的方式过滤行
+* 见[正则表达式](#正则表达式)
 
 ```bash
-$ # /rose/I means match the string 'rose' irrespective of case
+$ # /rose/I 不考虑大小写匹配字符串'rose'
 $ sed '/rose/Id' poem.txt
 Violets are blue,
 Sugar is sweet,
@@ -372,14 +373,14 @@ And so are you.
 
 <br>
 
-#### <a name="quit-commands"></a>Quit commands
+#### <a name="退出命令"></a>退出命令
 
-* Exit `sed` without processing further input
+* 不处理其它的输入退出 `sed`
 
 ```bash
-$ # same as: seq 23 45 | head -n5
-$ # remember that printing is default action if -n is not used
-$ # here, 5 is line number based addressing
+$ # 同: seq 23 45 | head -n5
+$ # 记住没有使用-n 是默认打印
+$ # 这里, 5 是行号
 $ seq 23 45 | sed '5q'
 23
 24
@@ -388,7 +389,7 @@ $ seq 23 45 | sed '5q'
 27
 ```
 
-* `Q` is similar to `q` but won't print the matching line
+* `Q` 同`q` 少打印正好匹配的那一行
 
 ```bash
 $ seq 23 45 | sed '5Q'
@@ -397,71 +398,71 @@ $ seq 23 45 | sed '5Q'
 25
 26
 
-$ # useful to print from beginning of file up to but not including line matching REGEXP
+$ # 从文件开始打印到匹配的那一行(但不包括该行)
 $ sed '/is/Q' poem.txt
 Roses are red,
 Violets are blue,
 ```
 
-* Use `tac` to get all lines starting from last occurrence of search string
+* 用`tac`反转文件所有行
 
 ```bash
-$ # all lines from last occurrence of '7'
+$ # 从文件的后面开始第一次出现数字'7'的行
 $ seq 50 | tac | sed '/7/q' | tac
 47
 48
 49
 50
 
-$ # all lines from last occurrence of '7' excluding line with '7'
+$ # 从文件的后面开始第一次出现数字'7'的行(但不包括该行)
 $ seq 50 | tac | sed '/7/Q' | tac
 48
 49
 50
 ```
 
-**Note**
+**注意**
 
-* This way of using quit commands won't work for inplace editing with multiple file input
-* See also [unix.stackexchange - applying changes to multiple files](https://unix.stackexchange.com/questions/309514/sed-apply-changes-in-multiple-files)
+* TODO: 这样使用 退出命令 在多文件内编辑不生效
+* See also [unix.stackexchange - applying changes to 多文件](https://unix.stackexchange.com/questions/309514/sed-apply-changes-in-多文件)
 
 <br>
 
-#### <a name="negating-regexp-address"></a>Negating REGEXP address
+#### <a name="地址取反正则表达式"></a>地址取反正则表达式
 
-* Use `!` to invert the specified address
+* 用`!` 去指定地址的其它地址
 
 ```bash
-$ # same as: sed -n '/so are/p' poem.txt
+$ # 同: sed -n '/so are/p' poem.txt
 $ sed '/so are/!d' poem.txt
 And so are you.
 
-$ # same as: sed '/are/d' poem.txt
+$ # 同: sed '/are/d' poem.txt
 $ sed -n '/are/!p' poem.txt
 Sugar is sweet,
 ```
 
 <br>
 
-#### <a name="combining-multiple-regexp"></a>Combining multiple REGEXP
+#### <a name="绑定多个表达式"></a>绑定多个表达式
 
-* See also [sed manual - Multiple commands syntax](https://www.gnu.org/software/sed/manual/sed.html#Multiple-commands-syntax) for more details
-* See also [sed scripts](#sed-scripts) section for an alternate way
+* 见[sed manual - Multiple commands syntax](https://www.gnu.org/software/sed/manual/sed.html#Multiple-commands-syntax) for more details
+* 见[sed scripts](#sed-scripts) section for an alternate way
 
 ```bash
-$ # each command as argument to -e option
+$ # 每个命令当作-e的一个参数
 $ sed -n -e '/blue/p' -e '/you/p' poem.txt
 Violets are blue,
 And so are you.
 
-$ # each command separated by ;
-$ # not all commands can be specified so
+$ # 用;分开
+$ # 不是所有的命令可以这样做
 $ sed -n '/blue/p; /you/p' poem.txt
 Violets are blue,
 And so are you.
 
-$ # each command separated by literal newline character
-$ # might depend on whether the shell allows such multiline command
+$ # 每个命令占一行
+$ # 取决于脚本是否运行多行命令
 $ sed -n '
 /blue/p
 /you/p
@@ -470,37 +471,37 @@ Violets are blue,
 And so are you.
 ```
 
-* Use `{}` command grouping for logical AND
+* 用 `{}` 对命令分组进行 AND 运算
 
 ```bash
-$ # same as: grep 'are' poem.txt | grep 'And'
-$ # space between /REGEXP/ and {} is optional
+$ # 同: grep 'are' poem.txt | grep 'And'
+$ # /REGEXP/ {} 之间的空格是可选的
 $ sed -n '/are/ {/And/p}' poem.txt
 And so are you.
 
-$ # same as: grep 'are' poem.txt | grep -v 'so'
+$ # 同: grep 'are' poem.txt | grep -v 'so'
 $ sed -n '/are/ {/so/!p}' poem.txt
 Roses are red,
 Violets are blue,
 
-$ # same as: grep -v 'red' poem.txt | grep -v 'blue'
+$ # 同: grep -v 'red' poem.txt | grep -v 'blue'
 $ sed -n '/red/!{/blue/!p}' poem.txt
 Sugar is sweet,
 And so are you.
-$ # many ways to do it, use whatever feels easier to construct
+$ # 有多种方法完成,用感觉简单的即可
 $ # sed -e '/red/d' -e '/blue/d' poem.txt
 $ # grep -v -e 'red' -e 'blue' poem.txt
 ```
 
-* Different ways to do same things. See also [Alternation](#alternation) and [Control structures](#control-structures)
+* 不同方法做同样的事情. 见[逻辑或](#逻辑或) and [Control structures](#control-structures)
 
 ```bash
-$ # multiple commands can lead to duplicatation
+$ # 多个命令因为匹配了多次会造成重复
 $ sed -n '/blue/p; /t/p' poem.txt
 Violets are blue,
 Violets are blue,
 Sugar is sweet,
-$ # in such cases, use regular expressions instead
+$ # 这种情况可以使用表达式
 $ sed -nE '/blue|t/p;' poem.txt
 Violets are blue,
 Sugar is sweet,
@@ -516,32 +517,32 @@ Violets are blue,
 
 <br>
 
-#### <a name="filtering-by-line-number"></a>Filtering by line number
+#### <a name="按行号过滤"></a>按行号过滤
 
-* Exact line number can be specified to be acted upon
-* As a special case, `$` indicates last line of file
-* See also [sed manual - Multiple commands syntax](https://www.gnu.org/software/sed/manual/sed.html#Multiple-commands-syntax)
+* 可以指定要处理的具体行
+* 特例, `$` 表示文件的最后一行
+* 见[sed manual - Multiple commands syntax](https://www.gnu.org/software/sed/manual/sed.html#Multiple-commands-syntax)
 
 ```bash
-$ # here, 2 represents the address for print command, similar to /REGEXP/p
-$ # same as: head -n2 poem.txt | tail -n1
+$ # 这里, 2 代表打印第2行, 同/REGEXP/p
+$ # 同: head -n2 poem.txt | tail -n1
 $ sed -n '2p' poem.txt
 Violets are blue,
 
-$ # print 2nd and 4th line
+$ # 打印第2和4行
 $ sed -n '2p; 4p' poem.txt
 Violets are blue,
 And so are you.
 
-$ # same as: tail -n1 poem.txt
+$ # 同: tail -n1 poem.txt
 $ sed -n '$p' poem.txt
 And so are you.
 
-$ # delete except 3rd line
+$ # 除了第3行删除其它
 $ sed '3!d' poem.txt
 Sugar is sweet,
 
-$ # substitution only on 2nd line
+$ # 只在第2行替换
 $ sed '2 s/are/ARE/' poem.txt
 Roses are red,
 Violets ARE blue,
@@ -549,10 +550,11 @@ Sugar is sweet,
 And so are you.
 ```
 
-* For large input files, combine `p` with `q` for speedy exit
-* `sed` would immediately quit without processing further input lines when `q` is used
+* 大型文件, 同时使用`p`和`q`为了快速退出
+* `q`使用了后 `sed`将立即退出
 
 ```bash
+$ # 不加q 循环结束才退出
 $ seq 3542 4623452 | sed -n '2452{p;q}'
 5993
 
@@ -560,7 +562,7 @@ $ seq 3542 4623452 | sed -n '250p; 2452{p;q}'
 3791
 5993
 
-$ # here is a sample time comparison
+$ # 这个例子打印出花费的时间
 $ time seq 3542 4623452 | sed -n '2452{p;q}' > /dev/null
 
 real    0m0.003s
@@ -573,11 +575,10 @@ user    0m0.396s
 sys     0m0.024s
 ```
 
-* mimicking `head` command using `q`
+* 用  `q`命令模仿`head`
 
 ```bash
-$ # same as: seq 23 45 | head -n5
-$ # remember that printing is default action if -n is not used
+$ # 同: seq 23 45 | head -n5
 $ seq 23 45 | sed '5q'
 23
 24
@@ -588,14 +589,14 @@ $ seq 23 45 | sed '5q'
 
 <br>
 
-#### <a name="print-only-line-number"></a>Print only line number
+#### <a name="只打印行号"></a>只打印行号
 
 ```bash
-$ # gives both line number and matching line
+$ # 匹配的行号和行内容
 $ grep -n 'blue' poem.txt
 2:Violets are blue,
 
-$ # gives only line number of matching line
+$ # 只给匹配行行号
 $ sed -n '/blue/=' poem.txt
 2
 
@@ -605,7 +606,7 @@ $ sed -n '/are/=' poem.txt
 4
 ```
 
-* If needed, matching line can also be printed. But there will be newline separation
+* 如果需要,匹配行也可以打印但是回变成一个新行
 
 ```bash
 $ sed -n '/blue/{=;p}' poem.txt
@@ -620,11 +621,9 @@ Violets are blue,
 
 <br>
 
-#### <a name="address-range"></a>Address range
+#### <a name="地址范围"></a>地址范围
 
-* So far, we've seen how to filter specific line based on *REGEXP* and line numbers
-* `sed` also allows to combine them to enable selecting a range of lines
-* Consider the sample input file for this section
+* `sed` 运行指定地址范围
 
 ```bash
 $ cat addr_range.txt
@@ -644,8 +643,8 @@ Much ado about nothing
 He he he
 ```
 
-* Range defined by start and end *REGEXP*
-* For other cases like getting lines without the line matching start and/or end, unbalanced start/end, when end *REGEXP* doesn't match, etc see [Lines between two REGEXPs](#lines-between-two-regexps) section
+* 用*正则表达式*定义地址范围
+* 其它例子见 For other cases like getting lines without the line matching start and/or end, unbalanced start/end, when end *正则表达式* doesn't match, etc see [Lines between two REGEXPs](#lines-between-two-regexps) section
 
 ```bash
 $ sed -n '/is/,/like/p' addr_range.txt
@@ -657,12 +656,12 @@ $ sed -n '/just/I,/believe/Ip' addr_range.txt
 Just do-it
 Believe it
 
-$ # the second REGEXP will always be checked after the line matching first address
+$ # 第2个表达式总数在第一个地址匹配后才检查
 $ sed -n '/No/,/No/p' addr_range.txt
 Not a bit funny
 No doubt you like it too
 
-$ # all the matching ranges will be printed
+$ # 所有匹配的范围都会被打印
 $ sed -n '/you/,/do/p' addr_range.txt
 How are you
 
@@ -672,10 +671,10 @@ No doubt you like it too
 Much ado about nothing
 ```
 
-* Range defined by start and end line numbers
+* 用起止行号定义范围
 
 ```bash
-$ # print lines numbered 3 to 7
+$ # 打印3到7行
 $ sed -n '3,7p' addr_range.txt
 Good day
 How are you
@@ -683,18 +682,18 @@ How are you
 Just do-it
 Believe it
 
-$ # print lines from line number 13 to last line
+$ # 从13行打印到最后一行
 $ sed -n '13,$p' addr_range.txt
 Much ado about nothing
 He he he
 
-$ # delete lines numbered 2 to 13
+$ # 从2删除到13行
 $ sed '2,13d' addr_range.txt
 Hello World
 He he he
 ```
 
-* Range defined by mix of line number and *REGEXP*
+* 混合使用行号和*正则表达式*定义范围
 
 ```bash
 $ sed -n '3,/do/p' addr_range.txt
@@ -712,10 +711,10 @@ Much ado about nothing
 He he he
 ```
 
-* Negating address range, just add `!` to end of address range
+* 地址范围取反, 只需要在地址范围后加`!` 
 
 ```bash
-$ # same as: seq 10 | sed '3,7d'
+$ # 同: seq 10 | sed '3,7d'
 $ seq 10 | sed -n '3,7!p'
 1
 2
@@ -723,7 +722,7 @@ $ seq 10 | sed -n '3,7!p'
 9
 10
 
-$ # same as: sed '/Today/,$d' addr_range.txt
+$ # 同: sed '/Today/,$d' addr_range.txt
 $ sed -n '/Today/,$!p' addr_range.txt
 Hello World
 
@@ -737,19 +736,19 @@ Believe it
 
 <br>
 
-#### <a name="relative-addressing"></a>Relative addressing
+#### <a name="相对地址"></a>相对地址
 
-* Prefixing `+` to a number for second address gives relative filtering
+* 在数字前用`+`表示相对地址
 * Similar to using `grep -A<num> --no-group-separator 'REGEXP'` but `grep` merges adjacent groups while `sed` does not
 
 ```bash
-$ # line matching 'is' and 2 lines after
+$ # 行匹配 'is' 所在行和后面2行
 $ sed -n '/is/,+2p' addr_range.txt
 Today is sunny
 Not a bit funny
 No doubt you like it too
 
-$ # note that all matching ranges will be filtered
+$ # 所有匹配的范围都会被过滤出来
 $ sed -n '/do/,+2p' addr_range.txt
 Just do-it
 Believe it
@@ -759,8 +758,8 @@ No doubt you like it too
 Much ado about nothing
 ```
 
-* The first address could be number too
-* Useful when using [Shell substitutions](#shell-substitutions)
+* 第一个地址也可以是数组
+* 在使用[脚本替换](#脚本替换)很有用
 
 ```bash
 $ sed -n '3,+4p' addr_range.txt
@@ -771,13 +770,13 @@ Just do-it
 Believe it
 ```
 
-* Another relative format is `i~j` which acts on ith line and i+j, i+2j, i+3j, etc
-    * `1~2` means 1st, 3rd, 5th, 7th, etc (i.e odd numbered lines)
-    * `5~3` means 5th, 8th, 11th, etc
+* 另一个相对格式地址是`i~j`,代表了i+j, i+2j, i+3j, 等行
+    * `1~2` 意味着1, 3, 5, 7, ... 行 (即 奇数行)
+    * `5~3`  5, 8, 11, ... 行 
 
 ```bash
-$ # match odd numbered lines
-$ # for even, use 2~2
+$ # 匹配奇数行
+$ # 偶数,用2~2
 $ seq 10 | sed -n '1~2p'
 1
 3
@@ -785,31 +784,31 @@ $ seq 10 | sed -n '1~2p'
 7
 9
 
-$ # match line numbers: 2, 2+2*2, 2+3*2, etc
+$ # 匹配线性数行: 2, 2+2*2, 2+3*2, etc
 $ seq 10 | sed -n '2~4p'
 2
 6
 10
 ```
 
-* If `~j` is specified after `,` then meaning changes completely
-* After the matching line based on number or *REGEXP* of start address, the closest line number multiple of `j` will mark end address
+* 如果 `~j` 在`,` 后,意思就完全不一样了
+* 在匹配第一个地址后,到最近的`j`的倍数就是结束地址
 
 ```bash
-$ # 2nd line is start address
-$ # closest multiple of 4 is 4th line
+$ # 2是开始地址
+$ # 最接近4的倍数的地址是4
 $ seq 10 | sed -n '2,~4p'
 2
 3
 4
-$ # closest multiple of 4 is 8th line
+$ #  最接近4的倍数的地址是8
 $ seq 10 | sed -n '5,~4p'
 5
 6
 7
 8
 
-$ # line matching on `Just` is 6th line, so ending is 10th line
+$ # 匹配`Just`的是第6行, 所以第10行结束
 $ sed -n '/Just/,~5p' addr_range.txt
 Just do-it
 Believe it
@@ -820,24 +819,24 @@ Not a bit funny
 
 <br>
 
-## <a name="using-different-delimiter-for-regexp"></a>Using different delimiter for REGEXP
+## <a name="在正则中使用不同的分隔符"></a>在正则中使用不同的分隔符
 
-* `/` is idiomatically used as the *REGEXP* delimiter
-    * See also [a bit of history on why / is commonly used as delimiter](https://www.reddit.com/r/commandline/comments/3lhgwh/why_did_people_standardize_on_using_forward/cvgie7j/)
-* But any character other than `\` and newline character can be used instead
-* This helps to avoid/reduce use of `\`
+* `/` 习惯上用于*正则表达式*的分隔符
+    * 见[a bit of history on why / is commonly used as delimiter](https://www.reddit.com/r/commandline/comments/3lhgwh/why_did_people_standardize_on_using_forward/cvgie7j/)
+* 其它的字符也可以用于正则表达式的分隔符
+* 有助于避免/重用`\`
 
 ```bash
-$ # instead of this
+$ # 不修改的做法
 $ echo '/home/learnbyexample/reports' | sed 's/\/home\/learnbyexample\//~\//'
 ~/reports
 
-$ # use a different delimiter
+$ # 使用其它分隔符
 $ echo '/home/learnbyexample/reports' | sed 's#/home/learnbyexample/#~/#'
 ~/reports
 ```
 
-* For *REGEXP* used in address matching, syntax is a bit different `\<char>REGEXP<char>`
+* *正则表达式*用于地址匹配语法不完全相同`\<char>REGEXP<char>`
 
 ```bash
 $ printf '/foo/bar/1\n/foo/baz/1\n'
@@ -850,25 +849,25 @@ $ printf '/foo/bar/1\n/foo/baz/1\n' | sed -n '\;/foo/bar/;p'
 
 <br>
 
-## <a name="regular-expressions"></a>Regular Expressions
+## <a name="正则表达式"></a>正则表达式
 
-* By default, `sed` treats *REGEXP* as BRE (Basic Regular Expression)
-* The `-E` option enables ERE (Extended Regular Expression) which in GNU sed's case only differs in how meta characters are used, no difference in functionalities
-    * Initially GNU sed only had `-r` option to enable ERE and `man sed` doesn't even mention `-E`
-    * Other `sed` versions use `-E` and `grep` uses `-E` as well. So `-r` won't be used in examples in this tutorial
-    * See also [sed manual - BRE-vs-ERE](https://www.gnu.org/software/sed/manual/sed.html#BRE-vs-ERE)
-* See [sed manual - Regular Expressions](https://www.gnu.org/software/sed/manual/sed.html#sed-regular-expressions) for more details
+* 默认, `sed` 把 *REGEXP正则表达式* 当作 BRE (Basic Regular Expression基本正则表达式)
+* `-E` 选项激活了 ERE (Extended Regular Expression扩展正则表达式) 在GNU sed's中只是在元字符使用上有区别, 功能上没有区别
+    * 最早的GNU sed只有`-r`选项,激活ERE,`man sed` 没有提到`-E`
+    * 其它的`sed`版本,使用`-E` 和`grep` 使用`-E`. 所以`-r`在这里不用
+    * 见[sed manual - BRE-vs-ERE](https://www.gnu.org/software/sed/manual/sed.html#BRE-vs-ERE)
+* 详见[sed manual - 正则表达式](https://www.gnu.org/software/sed/manual/sed.html#sed-正则表达式) 
 
 <br>
 
-#### <a name="line-anchors"></a>Line Anchors
+#### <a name="行锚点"></a>行锚点
 
-* Often, search must match from beginning of line or towards end of line
-* For example, an integer variable declaration in `C` will start with optional white-space, the keyword `int`, white-space and then variable(s)
-    * This way one can avoid matching declarations inside single line comments as well
-* Similarly, one might want to match a variable at end of statement
+* 通常, 从行的开头或者行的结束对查找很有用
+* 例如, `C`语言整形变量声明用可选空格开始,关键字`int`,空格然后是变量名
+    * 可以避免在行内匹配注释
+* 同样, 从后面匹配可以得到变量名
 
-Consider the input file and sample substitution without using any anchoring
+不使用行锚点
 
 ```bash
 $ cat anchors.txt
@@ -880,7 +879,7 @@ just scat and quit bothering me
 that is quite a fabricated tale
 try the grape variety muscat
 
-$ # without anchors, substitution will replace wherever the string is found
+$ # 没有锚点,替换命令将替换所有发行的字符串
 $ sed 's/cat/XXX/g' anchors.txt
 XXX and dog
 too many XXXs around here
@@ -891,16 +890,16 @@ that is quite a fabriXXXed tale
 try the grape variety musXXX
 ```
 
-* The meta character `^` forces *REGEXP* to match only at start of line
+* 元字符 `^` 强迫 *正则表达式* 匹配行首
 
 ```bash
-$ # filtering lines starting with 'cat'
+$ # 过滤所有'cat' 开始的行
 $ sed -n '/^cat/p' anchors.txt
 cat and dog
 catapults laid waste to the village
 
-$ # replace only at start of line
-$ # g modifier not needed as there can only be single match at start of line
+$ # 只替换在行首的
+$ # g选项这里是不需要的
 $ sed 's/^cat/XXX/' anchors.txt
 XXX and dog
 too many cats around here
@@ -910,20 +909,20 @@ just scat and quit bothering me
 that is quite a fabricated tale
 try the grape variety muscat
 
-$ # add something to start of line
+$ # 在行首添加
 $ echo 'Have a good day' | sed 's/^/Hi! /'
 Hi! Have a good day
 ```
 
-* The meta character `$` forces *REGEXP* to match only at end of line
+* 元字符 `$` 强迫 *正则表达式* 匹配行尾
 
 ```bash
-$ # filtering lines ending with 'cat'
+$ # 匹配以'cat'结尾的行
 $ sed -n '/cat$/p' anchors.txt
 to concatenate, use the cmd cat
 try the grape variety muscat
 
-$ # replace only at end of line
+$ # 只替换行尾出现的
 $ sed 's/cat$/YYY/' anchors.txt
 cat and dog
 too many cats around here
@@ -933,62 +932,62 @@ just scat and quit bothering me
 that is quite a fabricated tale
 try the grape variety musYYY
 
-$ # add something to end of line
+$ # 在行尾添加
 $ echo 'Have a good day' | sed 's/$/. Cya later/'
 Have a good day. Cya later
 ```
 
 <br>
 
-#### <a name="word-anchors"></a>Word Anchors
+#### <a name="单词锚点"></a>单词锚点
 
 * A **word** character is any alphabet (irrespective of case) or any digit or the underscore character
 * The word anchors help in matching or not matching boundaries of a word
-    * For example, to distinguish between `par`, `spar` and `apparent`
+    * 例如, to distinguish between `par`, `spar` and `apparent`
 * `\b` matches word boundary
     * `\` is meta character and certain combinations like `\b` and `\B` have special meaning
 
 ```bash
-$ # words ending with 'cat'
+$ # 以'cat'结尾的词
 $ sed -n 's/cat\b/XXX/p' anchors.txt
 XXX and dog
 to concatenate, use the cmd XXX
 just sXXX and quit bothering me
 try the grape variety musXXX
 
-$ # words starting with 'cat'
+$ # 以'cat'开头的词
 $ sed -n 's/\bcat/YYY/p' anchors.txt
 YYY and dog
 too many YYYs around here
 to concatenate, use the cmd YYY
 YYYapults laid waste to the village
 
-$ # only whole words
+$ # 只匹配这个单词
 $ sed -n 's/\bcat\b/ZZZ/p' anchors.txt
 ZZZ and dog
 to concatenate, use the cmd ZZZ
 
-$ # word is made up of alphabets, numbers and _
+$ # 单词有字母,数组和下划线组成
 $ echo 'foo, foo_bar and foo1' | sed 's/\bfoo\b/baz/g'
 baz, foo_bar and foo1
 ```
 
-* `\B` is opposite of `\b`, i.e it doesn't match word boundaries
+* `\B`和`\b`相反, 就是它不匹配单词的边界
 
 ```bash
-$ # substitute only if 'cat' is surrounded by word characters
+$ # 当 'cat'前后是字符时才替换
 $ sed -n 's/\Bcat\B/QQQ/p' anchors.txt
 to conQQQenate, use the cmd cat
 that is quite a fabriQQQed tale
 
-$ # substitute only if 'cat' is not start of word
+$ # 'cat'不是单词的开始才替换
 $ sed -n 's/\Bcat/RRR/p' anchors.txt
 to conRRRenate, use the cmd cat
 just sRRR and quit bothering me
 that is quite a fabriRRRed tale
 try the grape variety musRRR
 
-$ # substitute only if 'cat' is not end of word
+$ # 'cat'不是单词的结束才替换
 $ sed -n 's/cat\B/SSS/p' anchors.txt
 too many SSSs around here
 to conSSSenate, use the cmd cat
@@ -996,44 +995,44 @@ SSSapults laid waste to the village
 that is quite a fabriSSSed tale
 ```
 
-* One can also use these alternatives for `\b`
-    * `\<` for start of word
-    * `\>` for end of word
+* 以下可以代替`\b`使用
+    * `\<` 单词头部
+    * `\>` 单词尾部
 
 ```bash
-$ # same as: sed 's/\bcat\b/X/g'
+$ # 同: sed 's/\bcat\b/X/g'
 $ echo 'concatenate cat scat cater' | sed 's/\<cat\>/X/g'
 concatenate X scat cater
 
-$ # add something to both start/end of word
+$ # 在单词的首尾添加,就是替换\b
 $ echo 'hi foo_baz 3b' | sed 's/\b/:/g'
 :hi: :foo_baz: :3b:
 
-$ # add something only at start of word
+$ # 只在单词的首部加
 $ echo 'hi foo_baz 3b' | sed 's/\</:/g'
 :hi :foo_baz :3b
 
-$ # add something only at end of word
+$ # 只在单词的尾部加
 $ echo 'hi foo_baz 3b' | sed 's/\>/:/g'
 hi: foo_baz: 3b:
 ```
 
 <br>
 
-#### <a name="matching-the-meta-characters"></a>Matching the meta characters
+#### <a name="匹配元字符"></a>匹配元字符
 
-* Since meta characters like `^`, `$`, `\` etc have special meaning in *REGEXP*, they have to be escaped using `\` to match them literally
+* `^`, `$`, `\` 等在*正则表达式*中有特殊的意义, 匹配他们时要使用`\`
 
 ```bash
-$ # here, '^' will match only start of line
+$ # '^' 匹配行首
 $ echo '(a+b)^2 = a^2 + b^2 + 2ab' | sed 's/^/**/g'
 **(a+b)^2 = a^2 + b^2 + 2ab
 
-$ # '\` before '^' will match '^' literally
+$ # '\` 在'^'前,匹配'^'字符
 $ echo '(a+b)^2 = a^2 + b^2 + 2ab' | sed 's/\^/**/g'
 (a+b)**2 = a**2 + b**2 + 2ab
 
-$ # to match '\' use '\\'
+$ # 匹配'\' 用'\\'
 $ echo 'foo\bar' | sed 's/\\/ /'
 foo bar
 
@@ -1042,43 +1041,43 @@ pa$$s
 $ echo 'pa$$' | sed 's/\$/s/g'
 pass
 
-$ # '^' has special meaning only at start of REGEXP
-$ # similarly, '$' has special meaning only at end of REGEXP
+$ # '^' 只在表达式的首部有特殊意义
+$ # 同样, '$' 只在表达式尾部有特殊意义
 $ echo '(a+b)^2 = a^2 + b^2 + 2ab' | sed 's/a^2/A^2/g'
 (a+b)^2 = A^2 + b^2 + 2ab
 ```
 
-* Certain characters like `&` and `\` have special meaning in *REPLACEMENT* section of substitute as well. They too have to be escaped using `\`
-* And the delimiter character has to be escaped of course
-* See [back reference](#back-reference) section for use of `&` in *REPLACEMENT* section
+* 特殊的字符`&` and `\` 在*REPLACEMENT*替换节有特殊意义. 也要用`\`
+* 分隔符当然要转义
+* 见[逆参照](#逆参照) 部分`&`在*REPLACEMENT*替换部分的用法
 
 ```bash
-$ # & will refer to entire matched string of REGEXP section
+$ # & 代表要匹配的整个字符串
 $ echo 'foo and bar' | sed 's/and/"&"/'
 foo "and" bar
 $ echo 'foo and bar' | sed 's/and/"\&"/'
 foo "&" bar
 
-$ # use different delimiter where required
+$ # 需要的时候使用不同的分隔符
 $ echo 'a b' | sed 's/ /\//'
 a/b
 $ echo 'a b' | sed 's# #/#'
 a/b
 
-$ # use \\ to represent literal \
+$ # 用\\ 代表 \
 $ echo '/foo/bar/baz' | sed 's#/#\\#g'
 \foo\bar\baz
 ```
 
 <br>
 
-#### <a name="alternation"></a>Alternation
+#### <a name="逻辑或"></a>逻辑或
 
-* Two or more *REGEXP* can be combined as logical OR using the `|` meta character
-    * syntax is `\|` for BRE and `|` for ERE
-* Each side of `|` is complete regular expression with their own start/end anchors
-* How each part of alternation is handled and order of evaluation/output is beyond the scope of this tutorial
-    * See [this](https://www.regular-expressions.info/alternation.html) for more info on this topic.
+* 几个 *正则表达式* 可以用 `|` 连接表示逻辑 或
+    * 语法是 `\|` 基本正则表达式 and `|` for 扩展正则表达式
+* `|` 的两边都是一个完整的正则表达式
+* 逻辑或的两边是怎么处理的超过了这里的范围
+    * 见[this](https://www.正则表达式.info/alternation.html) for more info on this topic.
 
 ```bash
 $ # BRE
@@ -1091,14 +1090,14 @@ $ sed -nE '/red|blue/p' poem.txt
 Roses are red,
 Violets are blue,
 
-$ # filter lines starting or ending with 'cat'
+$ # 匹配以'cat'开头或结尾的行
 $ sed -nE '/^cat|cat$/p' anchors.txt
 cat and dog
 to concatenate, use the cmd cat
 catapults laid waste to the village
 try the grape variety muscat
 
-$ # g modifier is needed for more than one replacement
+$ # g选项代表多次匹配
 $ echo 'foo and temp and baz' | sed -E 's/foo|temp|baz/XYZ/'
 XYZ and temp and baz
 $ echo 'foo and temp and baz' | sed -E 's/foo|temp|baz/XYZ/g'
@@ -1107,32 +1106,32 @@ XYZ and XYZ and XYZ
 
 <br>
 
-#### <a name="the-dot-meta-character"></a>The dot meta character
+#### <a name="点元字符"></a>点元字符
 
-* The `.` meta character matches any character once, including newline
+* `.` 匹配任何一个字符,包括新行
 
 ```bash
-$ # replace all sequence of 3 characters starting with 'c' and ending with 't'
+$ # 替换所有'c'开头 't'结尾的3个字符
 $ echo 'coat cut fit c#t' | sed 's/c.t/XYZ/g'
 coat XYZ fit XYZ
 
-$ # replace all sequence of 4 characters starting with 'c' and ending with 't'
+$ #  替换所有'c'开头 't'结尾的4个字符
 $ echo 'coat cut fit c#t' | sed 's/c..t/ABCD/g'
 ABCD cut fit c#t
 
-$ # space, tab etc are also characters which will be matched by '.'
+$ # 空格,制表符等也可以用'.'匹配
 $ echo 'coat cut fit c#t' | sed 's/t.f/IJK/g'
 coat cuIJKit c#t
 ```
 
 <br>
 
-#### <a name="quantifiers"></a>Quantifiers
+#### <a name="多倍性"></a>多倍性
 
-All quantifiers in `sed` are greedy, i.e longest match wins as long as overall *REGEXP* is satisfied and precedence is left to right. In this section, we'll cover usage of quantifiers on characters
+`sed`的所有的多倍性都是贪婪的, 即: 当有多个满足的匹配时,最长的匹配胜出,优先权从左到右
 
-* `?` will try to match 0 or 1 time
-* For BRE, use `\?`
+* `?` 匹配 0 或 1 次
+* 对于基本正则表达式, 用 `\?`
 
 ```bash
 $ printf 'late\npale\nfactor\nrare\nact\n'
@@ -1142,25 +1141,25 @@ factor
 rare
 act
 
-$ # same as using: sed -nE '/at|act/p'
+$ # 同 using: 代表c出现了0次或1次 sed -nE '/at|act/p'
 $ printf 'late\npale\nfactor\nrare\nact\n' | sed -nE '/ac?t/p'
 late
 factor
 act
 
-$ # greediness comes in handy in some cases
-$ # problem: '<' has to be replaced with '\<' only if not preceded by '\'
+$ # 贪婪匹配在一些情况下很好用
+$ # 问题 : 如果 '<'前没有 '\' 就被替换为'\<'
 $ echo 'blah \< foo bar < blah baz <'
 blah \< foo bar < blah baz <
-$ # this won't work as '\<' gets replaced with '\\<'
+$ # '\<' 替换成'\\<'不正确
 $ echo 'blah \< foo bar < blah baz <' | sed -E 's/</\\</g'
 blah \\< foo bar \< blah baz \<
-$ # by using '\\?<' both '\<' and '<' gets replaced by '\<'
+$ # 使用'\\?<' , '\<' 和 '<' 都被替换成了'\<'
 $ echo 'blah \< foo bar < blah baz <' | sed -E 's/\\?</\\</g'
 blah \< foo bar \< blah baz \<
 ```
 
-* `*` will try to match 0 or more times
+* `*`  匹配 0 或 多 次
 
 ```bash
 $ printf 'abc\nac\nadc\nabbc\nbbb\nbc\nabbbbbc\n'
@@ -1179,22 +1178,22 @@ ac
 abbc
 abbbbbc
 
-$ # delete from start of line to 'te'
+$ # 从头删除到'te'的位置,这里匹配了最长的
 $ echo 'that is quite a fabricated tale' | sed 's/.*te//'
 d tale
-$ # delete from start of line to 'te '
+$ # 从头删除到'te '的位置,这里匹配了最长的
 $ echo 'that is quite a fabricated tale' | sed 's/.*te //'
 a fabricated tale
-$ # delete from first 'f' in the line to end of line
+$ # 从f开头产出到行尾
 $ echo 'that is quite a fabricated tale' | sed 's/f.*//'
 that is quite a 
 ```
 
-* `+` will try to match 1 or more times
-* For BRE, use `\+`
+* `+`  匹配 1 或 多 次
+* 对于基本正则表达式, use `\+`
 
 ```bash
-$ # match 'a' and 'c' with at least one 'b' in between
+$ # 匹配'a' 到'c' 中间最少有1个'b'
 $ # BRE
 $ printf 'abc\nac\nadc\nabbc\nbbb\nbc\nabbbbbc\n' | sed -n '/ab\+c/p'
 abc
@@ -1208,25 +1207,25 @@ abbc
 abbbbbc
 ```
 
-* For more precise control on number of times to match, use `{}`
+* 更精确的控制匹配的次数,用 `{}`
 
 ```bash
-$ # exactly 5 times
+$ # 正好 5 次
 $ printf 'abc\nac\nadc\nabbc\nbbb\nbc\nabbbbbc\n' | sed -nE '/ab{5}c/p'
 abbbbbc
 
-$ # between 1 to 3 times, inclusive of 1 and 3
+$ # 1 到 3 次, 包括 1 和 3
 $ printf 'abc\nac\nadc\nabbc\nbbb\nbc\nabbbbbc\n' | sed -nE '/ab{1,3}c/p'
 abc
 abbc
 
-$ # maximum of 2 times, including 0 times
+$ # 最多 2 次, 包括 0 次
 $ printf 'abc\nac\nadc\nabbc\nbbb\nbc\nabbbbbc\n' | sed -nE '/ab{,2}c/p'
 abc
 ac
 abbc
 
-$ # minimum of 2 times
+$ # 最少 2 次
 $ printf 'abc\nac\nadc\nabbc\nbbb\nbc\nabbbbbc\n' | sed -nE '/ab{2,}c/p'
 abbc
 abbbbbc
@@ -1239,13 +1238,13 @@ abbbbbc
 
 <br>
 
-#### <a name="character-classes"></a>Character classes
+#### <a name="字符相关"></a>字符相关
 
-* The `.` meta character provides a way to match any character
-* Character class provides a way to match any character among a specified set of characters enclosed within `[]`
+* `.` 可以匹配任何字符
+* 字符相关的匹配可以匹配 `[]` 中的所有字符
 
 ```bash
-$ # same as: sed -nE '/lane|late/p'
+$ # 同: sed -nE '/lane|late/p'
 $ printf 'late\nlane\nfate\nfete\n' | sed -n '/la[nt]e/p'
 late
 lane
@@ -1255,36 +1254,37 @@ late
 lane
 fate
 
-$ # quantifiers can be added similar to using for any other character
-$ # filter lines made up entirely of digits, containing at least one digit
+$ # 多倍性也可以用于其它字符
+$ # 匹配所有数字组成的行,至少包括一个数字
 $ printf 'cat5\nfoo\n123\n42\n' | sed -nE '/^[0123456789]+$/p'
 123
 42
-$ # filter lines made up entirely of digits, containing at least three digits
+$ # 匹配所有数字组成的行,至少包括3个数字
 $ printf 'cat5\nfoo\n123\n42\n' | sed -nE '/^[0123456789]{3,}$/p'
 123
 ```
 
-Character ranges
+字符范围
 
-* Matching any alphabet, number, hexadecimal number etc becomes cumbersome if every character has to be individually specified
-* So, there's a shortcut, using `-` to construct a range (has to be specified in ascending order)
-* See [ascii codes table](https://ascii.cl/) for reference
+* 如果每个字符都要被单独指定匹配会很麻烦
+* 所以,有个简单的办法,使用`-` 表示一个范围(用升序指定)
+* 见[ascii codes table](https://ascii.cl/) for reference
     * Note that behavior of range will depend on locale settings
     * [arch wiki - locale](https://wiki.archlinux.org/index.php/locale)
     * [Linux: Define Locale and Language Settings](https://www.shellhacks.com/linux-define-locale-language-settings/)
 
 ```bash
-$ # filter lines made up entirely of digits, at least one
+$ # 匹配所有数字组成的行,至少包括一个数字
 $ printf 'cat5\nfoo\n123\n42\n' | sed -nE '/^[0-9]+$/p'
 123
 42
 
 $ # filter lines made up entirely of lower case alphabets, at least one
+$ # 匹配所有小写字母组成的行,至少包括一个
 $ printf 'cat5\nfoo\n123\n42\n' | sed -nE '/^[a-z]+$/p'
 foo
 
-$ # filter lines made up entirely of lower case alphabets and digits, at least one
+$ # 匹配所有小写字母和数字组成的行,至少包括一个
 $ printf 'cat5\nfoo\n123\n42\n' | sed -nE '/^[a-z0-9]+$/p'
 cat5
 foo
@@ -1292,11 +1292,11 @@ foo
 42
 ```
 
-* Numeric ranges, easy for certain cases but not suitable always. Use `awk` or `perl` for arithmetic computation
-* See also [Matching Numeric Ranges with a Regular Expression](https://www.regular-expressions.info/numericranges.html)
+* 数字的范围,并不总是适合的,对于算术运算用`awk` 或`perl`
+* 见[Matching Numeric Ranges with a Regular Expression](https://www.正则表达式.info/numericranges.html)
 
 ```bash
-$ # numbers between 10 to 29
+$ # 10 29 之间的数字
 $ printf '23\n154\n12\n26\n98234\n' | sed -n '/^[12][0-9]$/p'
 23
 12
@@ -1307,101 +1307,101 @@ $ printf '23\n154\n12\n26\n98234\n' | sed -nE '/^[0-9]{3,}$/p'
 154
 98234
 
-$ # numbers >= 100 if there are leading zeros
+$ # numbers >= 100 处理有0开头的情况
 $ printf '0501\n035\n154\n12\n26\n98234\n' | sed -nE '/^0*[1-9][0-9]{2,}$/p'
 0501
 154
 98234
 ```
 
-Negating character class
+字符类取反
 
-* Meta characters inside and outside of `[]` are completely different
-* For example, `^` as first character inside `[]` matches characters other than those specified inside character class
+* 元字符在`[]`内外意义完全不一样
+* 例如, `^` 在 `[]` 中的第一个的意思是匹配不是该字符的其它字符
 
 ```bash
-$ # delete zero or more characters before first =
+$ # 删除=号前面的0或多个字符
 $ echo 'foo=bar; baz=123' | sed 's/^[^=]*//'
 =bar; baz=123
 
-$ # delete zero or more characters after last =
+$ # 删除最后一个=号后面的0或多个字符
 $ echo 'foo=bar; baz=123' | sed 's/[^=]*$//'
 foo=bar; baz=
 
-$ # same as: sed -n '/[aeiou]/!p'
+$ # 同: sed -n '/[aeiou]/!p'
 $ printf 'tryst\nglyph\npity\nwhy\n' | sed -n '/^[^aeiou]*$/p'
 tryst
 glyph
 why
 ```
 
-Matching meta characters inside `[]`
+在`[]`內匹配元字符
 
-* Characters like `^`, `]`, `-`, etc need special attention to be part of list
-* Also, sequences like `[.` or `=]` have special meaning within `[]`
-    * See [sed manual - Character-Classes-and-Bracket-Expressions](https://www.gnu.org/software/sed/manual/sed.html#Character-Classes-and-Bracket-Expressions) for complete list
+* `^`, `]`, `-`, 等作为列表的部分需要特别注意
+* 当然, 序列 `[.` or `=]` 在 `[]` 中有特别的意思
+    * 见[sed manual - Character-Classes-and-Bracket-Expressions](https://www.gnu.org/software/sed/manual/sed.html#Character-Classes-and-Bracket-Expressions) for complete list
 
 ```bash
-$ # to match - it should be first or last character within []
+$ # 匹配 - 要放在[] 的第一个或最后一个
 $ printf 'Foo-bar\nabc-456\n42\nCo-operate\n' | sed -nE '/^[a-z-]+$/Ip'
 Foo-bar
 Co-operate
 
-$ # to match ] it should be first character within []
+$ # 匹配 ] 要在[]中的第一个
 $ printf 'int foo\nint a[5]\nfoo=bar\n' | sed -n '/[]=]/p'
 int a[5]
 foo=bar
 
-$ # to match [ use [ anywhere in the character list
-$ # [][] will match both [ and ]
+$ # 用 [ 匹配 [
+$ # [][] 将匹配 [ 和 ]
 $ printf 'int foo\nint a[5]\nfoo=bar\n' | sed -n '/[[]/p'
 int a[5]
 
-$ # to match ^ it should be other than first in the list
+$ # 匹配^不能放在首字母
 $ printf 'c=a^b\nd=f*h+e\nz=x-y\n' | sed -n '/[*^]/p'
 c=a^b
 d=f*h+e
 ```
 
-Named character classes
+命名字符分类
 
-* Equivalent class shown is for C locale and ASCII character encoding
+* 同C locale 和ASCII character encoding分类
     * See [ascii codes table](https://ascii.cl/) for reference
 * See [sed manual - Character Classes and Bracket Expressions](https://www.gnu.org/software/sed/manual/sed.html#Character-Classes-and-Bracket-Expressions) for more details
 
-| Character classes | Description |
+| 字符相关 | 描述 |
 | ------------- | ----------- |
-| `[:digit:]` | Same as `[0-9]` |
-| `[:lower:]` | Same as `[a-z]` |
-| `[:upper:]` | Same as `[A-Z]` |
-| `[:alpha:]` | Same as `[a-zA-Z]` |
-| `[:alnum:]` | Same as `[0-9a-zA-Z]` |
-| `[:xdigit:]` | Same as `[0-9a-fA-F]` |
-| `[:cntrl:]` | Control characters - first 32 ASCII characters and 127th (DEL) |
-| `[:punct:]` | All the punctuation characters |
+| `[:digit:]` | 同 `[0-9]` |
+| `[:lower:]` | 同 `[a-z]` |
+| `[:upper:]` | 同 `[A-Z]` |
+| `[:alpha:]` | 同 `[a-zA-Z]` |
+| `[:alnum:]` | 同 `[0-9a-zA-Z]` |
+| `[:xdigit:]` | 同 `[0-9a-fA-F]` |
+| `[:cntrl:]` | 控制字符 - first 32 ASCII characters and 127th (DEL) |
+| `[:punct:]` | 标点符号|
 | `[:graph:]` | `[:alnum:]` and `[:punct:]` |
 | `[:print:]` | `[:alnum:]`, `[:punct:]` and space |
 | `[:blank:]` | Space and tab characters |
 | `[:space:]` | white-space characters: tab, newline, vertical tab, form feed, carriage return and space |
 
 ```bash
-$ # lines containing only hexadecimal characters
+$ # 只包括16进制字符的所有行
 $ printf '128\n34\nfe32\nfoo1\nbar\n' | sed -nE '/^[[:xdigit:]]+$/p'
 128
 34
 fe32
 
-$ # lines containing at least one non-hexadecimal character
+$ # 包括最少一个非16进制字符的行
 $ printf '128\n34\nfe32\nfoo1\nbar\n' | sed -n '/[^[:xdigit:]]/p'
 foo1
 bar
 
-$ # same as: sed -nE '/^[a-z-]+$/Ip'
+$ # 同: sed -nE '/^[a-z-]+$/Ip'
 $ printf 'Foo-bar\nabc-456\n42\nCo-operate\n' | sed -nE '/^[[:alpha:]-]+$/p'
 Foo-bar
 Co-operate
 
-$ # remove all punctuation characters
+$ # 移除所有标点符号
 $ sed 's/[[:punct:]]//g' poem.txt
 Roses are red
 Violets are blue
@@ -1409,27 +1409,27 @@ Sugar is sweet
 And so are you
 ```
 
-Backslash character classes
+反斜杠字符类
 
-* Equivalent class shown is for C locale and ASCII character encoding
+*  同C locale 和ASCII character encoding分类
     * See [ascii codes table](https://ascii.cl/) for reference
 * See [sed manual - regular expression extensions](https://www.gnu.org/software/sed/manual/sed.html#regexp-extensions) for more details
 
-| Character classes | Description |
+| 字符相关 | 描述 |
 | ------------- | ----------- |
-| `\w` | Same as `[0-9a-zA-Z_]` or `[[:alnum:]_]` |
-| `\W` | Same as `[^0-9a-zA-Z_]` or `[^[:alnum:]_]` |
-| `\s` | Same as `[[:space:]]` |
-| `\S` | Same as `[^[:space:]]` |
+| `\w` | 同 `[0-9a-zA-Z_]` or `[[:alnum:]_]` |
+| `\W` | 同 `[^0-9a-zA-Z_]` or `[^[:alnum:]_]` |
+| `\s` | 同 `[[:space:]]` |
+| `\S` | 同 `[^[:space:]]` |
 
 ```bash
-$ # lines containing only word characters
+$ # 只包含数字,大小写字母和下划线
 $ printf '123\na=b+c\ncmp_str\nFoo_bar\n' | sed -nE '/^\w+$/p'
 123
 cmp_str
 Foo_bar
 
-$ # backslash character classes cannot be used inside [] unlike perl
+$ # 反斜杠字符类不能用于[]中,不像perl
 $ # \w would simply match w
 $ echo 'w=y-x+9*3' | sed 's/[\w=]//g'
 y-x+9*3
@@ -1439,16 +1439,16 @@ $ echo 'w=y-x+9*3' | perl -pe 's/[\w=]//g'
 
 <br>
 
-#### <a name="escape-sequences"></a>Escape sequences
+#### <a name="转移字符"></a>转移字符
 
-* Certain ASCII characters like tab, carriage return, newline, etc have escape sequence to represent them
-    * Unlike backslash character classes, these can be used within `[]` as well
+* 某些字符像tab, carriage return, newline, 等有转义字符代表他们
+    * 可以用于`[]` 内
 * Any ASCII character can be also represented using their decimal or octal or hexadecimal value
     * See [ascii codes table](https://ascii.cl/) for reference
 * See [sed manual - Escapes](https://www.gnu.org/software/sed/manual/sed.html#Escapes) for more details
 
 ```bash
-$ # example for representing tab character
+$ # tab的例子
 $ printf 'foo\tbar\tbaz\n'
 foo     bar     baz
 $ printf 'foo\tbar\tbaz\n' | sed 's/\t/ /g'
@@ -1456,7 +1456,7 @@ foo bar baz
 $ echo 'a b c' | sed 's/ /\t/g'
 a       b       c
 
-$ # using escape sequence inside character class
+$ # 在字符类中使用转义
 $ printf 'a\tb\vc\n'
 a       b
          c
@@ -1465,8 +1465,8 @@ a^Ib^Kc
 $ printf 'a\tb\vc\n' | sed 's/[\t\v]/ /g'
 a b c
 
-$ # most common use case for hex escape sequence is to represent single quotes
-$ # equivalent is '\d039' and '\o047' for decimal and octal respectively
+$ # 用16进制代表单引号
+$ # 等于十进制的'\d039' 和八进制的'\o047'
 $ echo "foo: '34'"
 foo: '34'
 $ echo "foo: '34'" | sed 's/\x27/"/g'
@@ -1477,38 +1477,38 @@ foo: '34'
 
 <br>
 
-#### <a name="grouping"></a>Grouping
+#### <a name="分组"></a>分组
 
-* Character classes allow matching against a choice of multiple character list and then quantifier added if needed
-* One of the uses of grouping is analogous to character classes for whole regular expressions, instead of just list of characters
-* The meta characters `()` are used for grouping
-    * requires `\(\)` for BRE
-* Similar to maths `ab + ac = a(b+c)`, think of regular expression `a(b|c) = ab|ac`
+* 字符允许根据选择的多个字符匹配,可加上出现的数量 
+* 分组一个作用是模拟整个表达式,不需要逐个列出
+* `()` 用于分组
+    * 基础正则表达式用`\(\)`
+* 类似于数学中的`ab + ac = a(b+c)`, 正则表达式这样写 `a(b|c) = ab|ac`
 
 ```bash
-$ # four letter words with 'on' or 'no' in middle
+$ # 4个字母的中间包含'on' 或'no' 单词
 $ printf 'known\nmood\nknow\npony\ninns\n' | sed -nE '/\b[a-z](on|no)[a-z]\b/p'
 know
 pony
-$ # common mistake to use character class, will match 'oo' and 'nn' as well
+$ # TODO:: common mistake to use character class, will match 'oo' and 'nn' as well
 $ printf 'known\nmood\nknow\npony\ninns\n' | sed -nE '/\b[a-z][on]{2}[a-z]\b/p'
 mood
 know
 pony
 inns
 
-$ # quantifier example
+$ # 数量的例子 ? 0或1
 $ printf 'handed\nhand\nhandy\nhands\nhandle\n' | sed -nE '/^hand([sy]|le)?$/p'
 hand
 handy
 hands
 handle
 
-$ # remove first two columns where : is delimiter
+$ # 移除开头两列用:分隔的
 $ echo 'foo:123:bar:baz' | sed -E 's/^([^:]+:){2}//'
 bar:baz
 
-$ # can be nested as required
+$ # 可以嵌套
 $ printf 'spade\nscore\nscare\nspare\nsphere\n' | sed -nE '/^s([cp](he|a)[rd])e$/p'
 spade
 scare
@@ -1518,220 +1518,226 @@ sphere
 
 <br>
 
-#### <a name="back-reference"></a>Back reference
+#### <a name="逆参照"></a>逆参照
 
-* The matched string within `()` can also be used to be matched again by back referencing the captured groups
-* `\1` denotes the first matched group, `\2` the second one and so on
-    * Order is leftmost `(` is `\1`, next one is `\2` and so on
-    * Can be used both in *REGEXP* as well as in *REPLACEMENT* sections
-* `&` or `\0` represents entire matched string in *REPLACEMENT* section
-* Note that the matched string, not the regular expression itself is referenced
-    * for ex: if `([0-9][a-f])` matches `3b`, then back referencing will be `3b` not any other valid match of the regular expression like `8f`, `0a` etc
-* As `\` and `&` are special characters in *REPLACEMENT* section, use `\\` and `\&` respectively for literal representation
+ 在`()`中间匹配的字符串可以用于后引用.按括号分组
+* `\1` 代表第一个匹配的分组, `\2` 代表第二个..
+    * 次序是左起
+    * 可用于*正则表达式*和*REPLACEMENT*替换节
+* `&` 或 `\0` 代表要被替换的字符
+* 注意是参照被匹配的字符串,不是参照正则表达式
+    * 例如: `([0-9][a-f])` 匹配 `3b`, 逆参照应该是 `3b`不是其它的表达式
+* `\` 和 `&` 在*REPLACEMENT*替换部分是特殊字符, 用`\\` 和`\&`代表
 
 ```bash
-$ # filter lines with consecutive repeated alphabets
+$ # 匹配连续的两个字母的行
 $ printf 'eel\nflee\nall\npat\nilk\nseen\n' | sed -nE '/([a-z])\1/p'
 eel
 flee
 all
 seen
 
-$ # reduce \\ to single \ and delete if only single \
+$ # 减少 \\ 为  \ 如果只有一个 \ 删除
 $ echo '\[\] and \\w and \[a-zA-Z0-9\_\]' | sed -E 's/(\\?)\\/\1/g'
 [] and \w and [a-zA-Z0-9_]
 
-$ # remove two or more duplicate words separated by space
+$ # 移除2或多个空格分隔的重复单词
 $ # word boundaries prevent false matches like 'the theatre' 'sand and stone' etc
 $ echo 'a a a walking for for a cause' | sed -E 's/\b(\w+)( \1)+\b/\1/g'
 a walking for a cause
 
-$ # surround only third column with double quotes
-$ # note the nested capture groups and numbers used in REPLACEMENT section
+$ # 只对第3列用双引号包围 // TODO:
+$ # 注意嵌套在分组和数字在替换中的使用
 $ echo 'foo:123:bar:baz' | sed -E 's/^(([^:]+:){2})([^:]+)/\1"\3"/'
 foo:123:"bar":baz
 
-$ # add first column data to end of line as well
+$ # 把第一列添加到行尾
 $ echo 'foo:123:bar:baz' | sed -E 's/^([^:]+).*/& \1/'
 foo:123:bar:baz foo
 
-$ # surround entire line with double quotes
+$ # 整行用双引号包围
 $ echo 'hello world' | sed 's/.*/"&"/'
 "hello world"
-$ # add something at start as well as end of line
+$ # 在行首或行尾添加
 $ echo 'hello world' | sed 's/.*/Hi. &. Have a nice day/'
 Hi. hello world. Have a nice day
 ```
 
 <br>
 
-#### <a name="changing-case"></a>Changing case
+#### <a name="大小写转换"></a>大小写转换
 
-* Applies only to *REPLACEMENT* section, unlike `perl` where these can be used in *REGEXP* portion as well
-* See [sed manual - The s Command](https://www.gnu.org/software/sed/manual/sed.html#The-_0022s_0022-Command) for more details and corner cases
+* 只在*替换*部分有效, 不像`perl`可以在*正则表达式*有效
+* 详见[sed manual - The s Command](https://www.gnu.org/software/sed/manual/sed.html#The-_0022s_0022-Command) for more details and corner cases
 
 ```bash
-$ # UPPERCASE all alphabets, will be stopped on \L or \E
+$ # 大写所有字符,遇到\L 或者 \E 停止
 $ echo 'HeLlO WoRLD' | sed 's/.*/\U&/'
 HELLO WORLD
 
-$ # lowercase all alphabets, will be stopped on \U or \E
+$ # 小写所有字符,遇到\U 或者 \E 停止
 $ echo 'HeLlO WoRLD' | sed 's/.*/\L&/'
 hello world
 
-$ # Uppercase only next character
+$ # 只大写下一个字符
 $ echo 'foo bar' | sed 's/\w*/\u&/g'
 Foo Bar
 $ echo 'foo_bar next_line' | sed -E 's/_([a-z])/\u\1/g'
 fooBar nextLine
 
-$ # lowercase only next character
+$ # 只小写下一个字符
 $ echo 'FOO BAR' | sed 's/\w*/\l&/g'
 fOO bAR
 $ echo 'fooBar nextLine Baz' | sed -E 's/([a-z])([A-Z])/\1_\l\2/g'
 foo_bar next_line Baz
 
-$ # titlecase if input has mixed case
+$ # 大写第一个字符,输入是大小写混合的
 $ echo 'HeLlO WoRLD' | sed 's/.*/\L&/; s/\w*/\u&/g'
 Hello World
-$ # sed 's/.*/\L\u&/' also works, but not sure if it is defined behavior
+$ # sed 's/.*/\L\u&/' 也可以,但是不确定是不是已定义的行为
 $ echo 'HeLlO WoRLD' | sed 's/.*/\L&/; s/./\u&/'
 Hello world
 
-$ # \E will stop conversion started by \U or \L
+$ # \E 会停止\U 或 \L开始的转换
 $ echo 'foo_bar next_line baz' | sed -E 's/([a-z]+)(_[a-z]+)/\U\1\E\2/g'
 FOO_bar NEXT_line baz
 ```
 
 <br>
 
-## <a name="substitute-command-modifiers"></a>Substitute command modifiers
+## <a name="替换命令修改选项"></a>替换命令修改选项
 
-The `s` command syntax:
+`s` 命令的语法:
 
 ```
 s/REGEXP/REPLACEMENT/FLAGS
 ```
 
-* Modifiers (or FLAGS) like `g`, `p` and `I` have been already seen. For completeness, they will be discussed again along with rest of the modifiers
-* See [sed manual - The s Command](https://www.gnu.org/software/sed/manual/sed.html#The-_0022s_0022-Command) for more details and corner cases
+* 修改选项 `g`, `p` and `I` 已经了解过. 为了完整性,讨论其它的 替换命令修改选项
+* 详见[sed manual - The s Command](https://www.gnu.org/software/sed/manual/sed.html#The-_0022s_0022-Command) 
 
 <br>
 
-#### <a name="g-modifier"></a>g modifier
+#### <a name="g选项"></a>g选项
 
-By default, substitute command will replace only first occurrence of match. `g` modifier is needed to replace all occurrences
+默认,替换命令只匹配第一个. `g` 替换所有
 
 ```bash
-$ # replace only first : with -
+$ # 只体会第一个 : 为 -  
 $ echo 'foo:123:bar:baz' | sed 's/:/-/'
 foo-123:bar:baz
 
-$ # replace all : with -
+$ # 替换所有的 : 为 -
 $ echo 'foo:123:bar:baz' | sed 's/:/-/g'
 foo-123-bar-baz
 ```
 
 <br>
 
-#### <a name="replace-specific-occurrence"></a>Replace specific occurrence
+#### <a name="替换指定的次数"></a>替换指定的次数
 
-* A number can be used to specify *N*th match to be replaced
+* 可以指定替换的次数
 
 ```bash
-$ # replace first occurrence
+$ # 替换第一次出现
 $ echo 'foo:123:bar:baz' | sed 's/:/-/'
 foo-123:bar:baz
+$ # [^:] 匹配不为:的所有字符1个到多个,替换第2次出现这样的情况
 $ echo 'foo:123:bar:baz' | sed -E 's/[^:]+/XYZ/'
 XYZ:123:bar:baz
 
-$ # replace second occurrence
+$ # 在第二次出现时替换
 $ echo 'foo:123:bar:baz' | sed 's/:/-/2'
 foo:123-bar:baz
+$ # [^:] 匹配不为:的所有字符1个到多个,替换第2次出现这样的情况
 $ echo 'foo:123:bar:baz' | sed -E 's/[^:]+/XYZ/2'
 foo:XYZ:bar:baz
 
-$ # replace third occurrence
+$ #  在第3次出现时替换
 $ echo 'foo:123:bar:baz' | sed 's/:/-/3'
 foo:123:bar-baz
+$ # [^:] 匹配不为:的所有字符1个到多个,替换第3次出现这样的情况
 $ echo 'foo:123:bar:baz' | sed -E 's/[^:]+/XYZ/3'
 foo:123:XYZ:baz
 
-$ # choice of quantifier depends on knowing input
+$ # 基于输入的多倍性的选择
+$ # 不为:的0-n个字符第2次出现,第一个:前算第一次出现
 $ echo ':123:bar:baz' | sed 's/[^:]*/XYZ/2'
 :XYZ:bar:baz
 $ echo ':123:bar:baz' | sed -E 's/[^:]+/XYZ/2'
 :123:XYZ:baz
 ```
 
-* Replacing *N*th match from end of line when number of matches is unknown
-* Makes use of greediness of quantifiers
+* 从行尾匹配第几次的替换未知如何做
+* 确保多倍性贪婪原则
 
 ```bash
-$ # replacing last occurrence
-$ # can also use sed -E 's/:([^:]*)$/-\1/'
+$ # 替换最后一次匹配
+$ # \1 第一个匹配的引用
+$ # \1 匹配 foo:123:bar  整个表达式匹配为 foo:123:bar:  
+$ # 也可以用 sed -E 's/:([^:]*)$/-\1/'
 $ echo 'foo:123:bar:baz' | sed -E 's/(.*):/\1-/'
 foo:123:bar-baz
 $ echo '456:foo:123:bar:789:baz' | sed -E 's/(.*):/\1-/'
 456:foo:123:bar:789-baz
 $ echo 'foo and bar and baz land good' | sed -E 's/(.*)and/\1XYZ/'
 foo and bar and baz lXYZ good
-$ # use word boundaries as necessary
+$ # 可以使用单词边界
 $ echo 'foo and bar and baz land good' | sed -E 's/(.*)\band\b/\1XYZ/'
 foo and bar XYZ baz land good
 
-$ # replacing last but one
+$ # 替换倒数第2个:
 $ echo 'foo:123:bar:baz' | sed -E 's/(.*):(.*:)/\1-\2/'
 foo:123-bar:baz
 $ echo '456:foo:123:bar:789:baz' | sed -E 's/(.*):(.*:)/\1-\2/'
 456:foo:123:bar-789:baz
 
-$ # replacing last but two
+$ # 替换倒数第3个:
 $ echo '456:foo:123:bar:789:baz' | sed -E 's/(.*):((.*:){2})/\1-\2/'
 456:foo:123-bar:789:baz
-$ # replacing last but three
+$ # 替换倒数第4个:
 $ echo '456:foo:123:bar:789:baz' | sed -E 's/(.*):((.*:){3})/\1-\2/'
 456:foo-123:bar:789:baz
 ```
 
-* Replacing all but first *N* occurrences by combining with `g` modifier
+* 替换所有的但是处理前*N*次出现和 `g`一起用
 
 ```bash
-$ # replace all : with - except first two
+$ # 用-替换所有的:除了前两个
 $ echo '456:foo:123:bar:789:baz' | sed -E 's/:/-/3g'
 456:foo:123-bar-789-baz
 
-$ # replace all : with - except first three
+$ # 用-替换所有的:除了前3个
 $ echo '456:foo:123:bar:789:baz' | sed -E 's/:/-/4g'
 456:foo:123:bar-789-baz
 ```
 
-* Replacing multiple *N*th occurrences
+* 替换*N*次出现
 
 ```bash
-$ # replace first two occurrences of : with -
+$ # 把前两个: 为-
 $ echo '456:foo:123:bar:789:baz' | sed 's/:/-/; s/:/-/'
 456-foo-123:bar:789:baz
 
-$ # replace second and third occurrences of : with -
+$ # 用-替换第2和3次出现的: 
 $ # note the changes in number to be used for subsequent replacement
 $ echo '456:foo:123:bar:789:baz' | sed 's/:/-/2; s/:/-/2'
 456:foo-123-bar:789:baz
 
-$ # better way is to use descending order
+$ # 更好的方法使用降序
 $ echo '456:foo:123:bar:789:baz' | sed 's/:/-/3; s/:/-/2'
 456:foo-123-bar:789:baz
-$ # replace second, third and fifth occurrences of : with -
+$ # 用-替换第2,3,5次出现
 $ echo '456:foo:123:bar:789:baz' | sed 's/:/-/5; s/:/-/3; s/:/-/2'
 456:foo-123-bar:789-baz
 ```
 
 <br>
 
-#### <a name="ignoring-case"></a>Ignoring case
+#### <a name="iI选项-忽略大小写"></a>iI选项-忽略大小写
 
-* Either `i` or `I` can be used for replacing in case-insensitive manner
-* Since only `I` can be used for address filtering (for ex: `sed '/rose/Id' poem.txt`), use `I` for substitute command as well for consistency
+* `i` 或者`I` 可以用户大小写敏感的替换
+* TODO:  Since only `I` can be used for address filtering (for ex: `sed '/rose/Id' poem.txt`), use `I` for substitute command as well for consistency
 
 ```bash
 $ echo 'hello Hello HELLO HeLlO' | sed 's/hello/hi/g'
@@ -1743,50 +1749,50 @@ hi hi hi hi
 
 <br>
 
-#### <a name="p-modifier"></a>p modifier
+#### <a name="p选项-输出"></a>p选项-输出
 
-* Usually used in conjunction with `-n` option to output only modified lines
+* 通常和`-n` 一起用只输出修改的行
 
 ```bash
-$ # no output if no substitution
+$ # 没有替换就不输出
 $ echo 'hi there. have a nice day' | sed -n 's/xyz/XYZ/p'
-$ # modified line if there is substitution
+$ # 有替换只输出修改过的行
 $ echo 'hi there. have a nice day' | sed -n 's/\bh/H/pg'
 Hi there. Have a nice day
 
-$ # only lines containing 'are'
+$ # 只输出包括'are'的行
 $ sed -n 's/are/ARE/p' poem.txt
 Roses ARE red,
 Violets ARE blue,
 And so ARE you.
 
-$ # only lines containing 'are' as well as 'so'
+$ # 包含'are'和'so'的行,替换'so'为'SO'
 $ sed -n '/are/ s/so/SO/p' poem.txt
 And SO are you.
 ```
 
 <br>
 
-#### <a name="w-modifier"></a>w modifier
+#### <a name="w选项-输出到文件"></a>w选项-输出到文件
 
-* Allows to write only the changes to specified file name instead of default **stdout**
+* 允许把修改输出到指定文件
 
 ```bash
-$ # space between w and filename is optional
-$ # same as: sed -n 's/3/three/p' > 3.txt
+$ # 在w 和 文件名之间的空格是可选的
+$ # 同: sed -n 's/3/three/p' > 3.txt
 $ seq 20 | sed -n 's/3/three/w 3.txt'
 $ cat 3.txt
 three
 1three
 
-$ # do not use -n if output should be displayed as well as written to file
+$ # 当写到文件时也要输出到屏幕 不要用-n
 $ echo '456:foo:123:bar:789:baz' | sed -E 's/(:[^:]*){2}$//w col.txt'
 456:foo:123:bar
 $ cat col.txt
 456:foo:123:bar
 ```
 
-* For multiple output files, use `-e` for each file
+* 多个输出文件,用`-e`指定每个文件
 
 ```bash
 $ seq 20 | sed -n -e 's/5/five/w 5.txt' -e 's/7/seven/w 7.txt'
@@ -1798,12 +1804,12 @@ seven
 1seven
 ```
 
-* There are two predefined filenames
+* 有两个预定义的文件名
     * `/dev/stdout` to write to **stdout**
     * `/dev/stderr` to write to **stderr**
 
 ```bash
-$ # inplace editing as well as display changes on terminal
+$ # 在编辑文件的时候同时输出到终端
 $ sed -i 's/three/3/w /dev/stdout' 3.txt
 3
 13
@@ -1814,13 +1820,12 @@ $ cat 3.txt
 
 <br>
 
-#### <a name="e-modifier"></a>e modifier
+#### <a name="e选项-替换编辑行"></a>e选项-替换编辑行
 
-* Allows to use shell command output in *REPLACEMENT* section
-* Trailing newline from command output is suppressed
+* 替换的时候不输出原来的行
 
 ```bash
-$ # replacing a line with output of shell command
+$ # 替换行
 $ printf 'Date:\nreplace this line\n'
 Date:
 replace this line
@@ -1828,13 +1833,13 @@ $ printf 'Date:\nreplace this line\n' | sed 's/^replace.*/date/e'
 Date:
 Thu May 25 10:19:46 IST 2017
 
-$ # when using p modifier with e, order is important
+$ # 使用 p选项-输出 和 e-选项, 顺序很重要
 $ printf 'Date:\nreplace this line\n' | sed -n 's/^replace.*/date/ep'
 Thu May 25 10:19:46 IST 2017
 $ printf 'Date:\nreplace this line\n' | sed -n 's/^replace.*/date/pe'
 date
 
-$ # entire modified line is executed as shell command
+$ # 用e选项改后的结果当作shell命令执行
 $ echo 'xyz 5' | sed 's/xyz/seq/e'
 1
 2
@@ -1845,39 +1850,39 @@ $ echo 'xyz 5' | sed 's/xyz/seq/e'
 
 <br>
 
-#### <a name="m-modifier"></a>m modifier
+#### <a name="m-选项"></a>m-选项
 
-* Either `m` or `M` can be used
-* So far, we've seen only line based operations (newline character being used to distinguish lines)
-* There are various ways (see [sed manual - How sed Works](https://www.gnu.org/software/sed/manual/sed.html#Execution-Cycle)) by which more than one line is there in pattern space and in such cases `m` modifier can be used
-* See also [unix.stackexchange - usage of multi-line modifier](https://unix.stackexchange.com/questions/298670/simple-significant-usage-of-m-multi-line-address-suffix) for more examples
+* `m` 或`M` 都可以使用
+* 我们已经见识过基于行的操作,换行符用于区分不同的行
+* 有不用的方法(见[sed manual - How sed Works](https://www.gnu.org/software/sed/manual/sed.html#Execution-Cycle)) 在模式空间中多于一行,`m`选项可以运用
+* 见[unix.stackexchange - usage of multi-line选项-替换编辑行](https://unix.stackexchange.com/questions/298670/simple-significant-usage-of-m-multi-line-address-suffix) for more examples
 
-Before seeing example with `m` modifier, let's see a simple example to get two lines in pattern space
+在看`m`选项前,看一下两行的模式空间的例子
 
 ```bash
-$ # line matching 'blue' and next line in pattern space
+$ # 在模式空间匹配'blue'所在行和下一行
 $ sed -n '/blue/{N;p}' poem.txt
 Violets are blue,
 Sugar is sweet,
 
-$ # applying substitution, remember that . matches newline as well
+$ # 运用替换,记住.匹配了新行
 $ sed -n '/blue/{N;s/are.*is//p}' poem.txt
 Violets  sweet,
 ```
 
-* When `m` modifier is used, it affects the behavior of `^`, `$` and `.` meta characters
+* 当`m`选项使用,影响`^`, `$` 和 `.` 的元字符的行为
 
 ```bash
-$ # without m modifier, ^ will anchor only beginning of entire pattern space
+$ # 没有用m选项, ^ 只匹配整个模式空间的开头
 $ sed -n '/blue/{N;s/^/:: /pg}' poem.txt
 :: Violets are blue,
 Sugar is sweet,
-$ # with m modifier, ^ will anchor each individual line within pattern space
+$ # 用m选项, ^ 匹配模式空间中的每一行的开头
 $ sed -n '/blue/{N;s/^/:: /pgm}' poem.txt
 :: Violets are blue,
 :: Sugar is sweet,
 
-$ # same applies to $ as well
+$ # 同样运用于$
 $ sed -n '/blue/{N;s/$/ ::/pg}' poem.txt
 Violets are blue,
 Sugar is sweet, ::
@@ -1885,7 +1890,7 @@ $ sed -n '/blue/{N;s/$/ ::/pgm}' poem.txt
 Violets are blue, ::
 Sugar is sweet, ::
 
-$ # with m modifier, . will not match newline character
+$ # 用m选项, . 不匹配换行符
 $ sed -n '/blue/{N;s/are.*//p}' poem.txt
 Violets 
 $ sed -n '/blue/{N;s/are.*//pm}' poem.txt
@@ -1895,20 +1900,20 @@ Sugar is sweet,
 
 <br>
 
-## <a name="shell-substitutions"></a>Shell substitutions
+## <a name="脚本替换"></a>脚本替换
 
-* Examples presented works with `bash` shell, might differ for other shells
+* `bash`的例子和其它的 shell不同
 * See also [stackoverflow - Difference between single and double quotes in Bash](https://stackoverflow.com/questions/6697753/difference-between-single-and-double-quotes-in-bash)
-* For robust substitutions taking care of meta characters in *REGEXP* and *REPLACEMENT* sections, see
+* For robust substitutions taking care of meta characters in *正则表达式* and *REPLACEMENT* sections, see
     * [unix.stackexchange - How to ensure that string interpolated into sed substitution escapes all metachars](https://unix.stackexchange.com/questions/129059/how-to-ensure-that-string-interpolated-into-sed-substitution-escapes-all-metac)
     * [unix.stackexchange - What characters do I need to escape when using sed in a sh script?](https://unix.stackexchange.com/questions/32907/what-characters-do-i-need-to-escape-when-using-sed-in-a-sh-script)
     * [stackoverflow - Is it possible to escape regex metacharacters reliably with sed](https://stackoverflow.com/questions/29613304/is-it-possible-to-escape-regex-metacharacters-reliably-with-sed)
 
 <br>
 
-#### <a name="variable-substitution"></a>Variable substitution
+#### <a name="变量替换"></a>变量替换
 
-* Entire command in double quotes can be used for simple use cases
+* 简单的例子是用双引号
 
 ```bash
 $ word='are'
@@ -1924,14 +1929,14 @@ Violets ARE blue,
 Sugar is sweet,
 And so ARE you.
 
-$ # need to use delimiter as suitable
+$ # 需要使用合适的分隔符
 $ echo 'home path is:' | sed "s/$/ $HOME/"
 sed: -e expression #1, char 7: unknown option to `s'
 $ echo 'home path is:' | sed "s|$| $HOME|"
 home path is: /home/learnbyexample
 ```
 
-* If command has characters like `\`, backtick, `!` etc, double quote only the variable
+* 如果命令中有`\`, backtick, `!` 等, 只用双引号引用变量
 
 ```bash
 $ # if history expansion is enabled, ! is special
@@ -1950,45 +1955,45 @@ And so are you.
 
 <br>
 
-#### <a name="command-substitution"></a>Command substitution
+#### <a name="命令替换"></a>命令替换
 
-* Much more flexible than using `e` modifier as part of line can be modified as well
+* 比`e`选项更加灵活
 
 ```bash
 $ echo 'today is date' | sed 's/date/'"$(date +%A)"'/'
 today is Tuesday
 
-$ # need to use delimiter as suitable
+$ # 合适的使用分隔符
 $ echo 'current working dir is: ' | sed 's/$/'"$(pwd)"'/'
 sed: -e expression #1, char 6: unknown option to `s'
 $ echo 'current working dir is: ' | sed 's|$|'"$(pwd)"'|'
 current working dir is: /home/learnbyexample/command_line_text_processing
 
-$ # multiline output cannot be substituted in this manner
+$ # 这样是不能替换成多行
 $ echo 'foo' | sed 's/foo/'"$(seq 5)"'/'
 sed: -e expression #1, char 7: unterminated `s' command
 ```
 
 <br>
 
-## <a name="z-and-s-command-line-options"></a>z and s command line options
+## <a name="z和s命令"></a>z和s命令
 
-* We have already seen a few options like `-n`, `-e`, `-i` and `-E`
-* This section will cover `-z` and `-s` options
-* See [sed manual - Command line options](https://www.gnu.org/software/sed/manual/sed.html#Command_002dLine-Options) for other options and more details
+* 已经看过`-n`, `-e`, `-i` and `-E`
+* 这里介绍`-z` and `-s`选项
+* 见[sed manual - Command line options](https://www.gnu.org/software/sed/manual/sed.html#Command_002dLine-Options) for other options and more details
 
-The `-z` option will cause `sed` to separate input based on ASCII NUL character instead of newlines
+`-z` 将使`sed`用ASCII NUL字符分割新行而不是用换行符
 
 ```bash
-$ # useful to process null separated data
+$ # 用\0 null分隔行
 $ # for ex: output of grep -Z, find -print0, etc
 $ printf 'teal\0red\nblue\n\0green\n' | sed -nz '/red/p' | cat -A
 red$
 blue$
 ^@
 
-$ # also useful to process whole file(not having NUL characters) as a single string
-$ # adds ; to previous line if current line starts with c
+$ # 整个文件当作一行字符串处理
+$ # 如果当前行用c开头,在前一行加;
 $ printf 'cat\ndog\ncoat\ncut\nmat\n' | sed -z 's/\nc/;&/g'
 cat
 dog;
@@ -1997,17 +2002,17 @@ cut
 mat
 ```
 
-The `-s` option will cause `sed` to treat multiple input files separately instead of treating them as single concatenated input. If `-i` is being used, `-s` is implied
+`-s`选项使`sed`把多个输入文件当作单独对待,而不是当作一串输入. 如果用了`-i`, `-s`默认使用
 
 ```bash
-$ # without -s, there is only one first line
-$ # F command prints file name of current file
+$ # 没有 -s, 只有一个第一行
+$ # F 命令打印当前文件的名字
 $ sed '1F' f1 f2
 f1
 I ate three apples
 I bought two bananas and three mangoes
 
-$ # with -s, each file has its own address
+$ # 用 -s, 每个文件有自己的地址
 $ sed -s '1F' f1 f2
 f1
 I ate three apples
@@ -2019,34 +2024,34 @@ I bought two bananas and three mangoes
 
 <br>
 
-## <a name="change-command"></a>change command
+## <a name="修改命令"></a>修改命令
 
-The change command `c` will delete line(s) represented by address or address range and replace it with given string
+修改命令 `c` 删除当前行用给定的字符串代替
 
-**Note** the string used cannot have literal newline character, use escape sequence instead
+**注意** 字符串不能包含换行符,有的话使用转义字符
 
 ```bash
-$ # white-space between c and replacement string is ignored
+$ # c和替换成字符的空格可以忽略
 $ seq 3 | sed '2c foo bar'
 1
 foo bar
 3
 
-$ # note how all lines in address range are replaced
+$ # 所有地址范围都被替换
 $ seq 8 | sed '3,7cfoo bar'
 1
 2
 foo bar
 8
 
-$ # escape sequences are allowed in string to be replaced
+$ # 可以在替换字符串中使用转义字符
 $ sed '/red/,/is/chello\nhi there' poem.txt
 hello
 hi there
 And so are you.
 ```
 
-* command will apply for all matching addresses
+* 命令将作用于所有匹配的地址
 
 ```bash
 $ seq 5 | sed '/[24]/cfoo'
@@ -2057,11 +2062,11 @@ foo
 5
 ```
 
-* `\` is special immediately after `c`, see [sed manual - other commands](https://www.gnu.org/software/sed/manual/sed.html#Other-Commands) for details
+* `\`紧跟`c`有特殊意义, see [sed manual - other commands](https://www.gnu.org/software/sed/manual/sed.html#Other-Commands) for details
 * If escape sequence is needed at beginning of replacement string, use an additional `\`
 
 ```bash
-$ # \ helps to add leading spaces
+$ # \ 帮助添加前导的空格
 $ seq 3 | sed '2c  a'
 1
 a
@@ -2081,7 +2086,7 @@ $ seq 3 | sed '2c\\tgood day'
 3
 ```
 
-* Since `;` cannot be used to distinguish between string and end of command, use `-e` for multiple commands
+* `;` 出现不能区分字符串和命令结尾, 多个命令`-e`
 
 ```bash
 $ sed -e '/are/cHi;s/is/IS/' poem.txt
@@ -2097,7 +2102,7 @@ Sugar IS sweet,
 Hi
 ```
 
-* Using shell substitution
+* 用脚本替换
 
 ```bash
 $ text='good day'
@@ -2118,29 +2123,29 @@ $ seq 3 | sed '2c'"$(date +%A)"
 Thursday
 3
 
-$ # multiline command output will lead to error
+$ # 多行输出的命令会报错
 $ seq 3 | sed '2c'"$(seq 2)"
 sed: -e expression #1, char 5: missing command
 ```
 
 <br>
 
-## <a name="insert-command"></a>insert command
+## <a name="插入命令"></a>插入命令
 
-The insert command allows to add string before a line matching given address
+插入命令运行在指定地址的一行前加字符串
 
-**Note** the string used cannot have literal newline character, use escape sequence instead
+**注意** 字符串不能包含换行符,有的话使用转义字符
 
 ```bash
-$ # white-space between i and string is ignored
-$ # same as: sed '2s/^/hello\n/'
+$ # i和字符串中间的空格被忽略
+$ # 同: sed '2s/^/hello\n/'
 $ seq 3 | sed '2i hello'
 1
 hello
 2
 3
 
-$ # escape sequences can be used
+$ # 使用转移字符
 $ seq 3 | sed '2ihello\nhi'
 1
 hello
@@ -2149,9 +2154,10 @@ hi
 3
 ```
 
-* command will apply for all matching addresses
+* 命令将作用与所有匹配的地址命令将作用于所有匹配的地址
 
 ```bash
+# [24] 表示一行中只要有2或4都匹配成功
 $ seq 5 | sed '/[24]/ifoo'
 1
 foo
@@ -2162,7 +2168,7 @@ foo
 5
 ```
 
-* `\` is special immediately after `i`, see [sed manual - other commands](https://www.gnu.org/software/sed/manual/sed.html#Other-Commands) for details
+* `\` 紧跟在`i`是特殊的,单独一个`\`代表换行 see [sed manual - other commands](https://www.gnu.org/software/sed/manual/sed.html#Other-Commands) for details
 * If escape sequence is needed at beginning of replacement string, use an additional `\`
 
 ```bash
@@ -2189,7 +2195,7 @@ $ seq 3 | sed '2i\\tbar'
 3
 ```
 
-* Since `;` cannot be used to distinguish between string and end of command, use `-e` for multiple commands
+* `;` 不能用于区分是字符还是命令的结束,多个命令用`-e`
 
 ```bash
 $ sed -e '/is/ifoobar;s/are/ARE/' poem.txt
@@ -2207,7 +2213,7 @@ Sugar is sweet,
 And so ARE you.
 ```
 
-* Using shell substitution
+* 使用脚本替换
 
 ```bash
 $ text='good day'
@@ -2225,6 +2231,7 @@ foo bar
 2
 3
 
+**Note** 用$() 中间运行命令,得到字符串接到插入的内容中
 $ seq 3 | sed '2iToday is '"$(date +%A)"
 1
 Today is Thursday
@@ -2238,22 +2245,22 @@ sed: -e expression #1, char 5: missing command
 
 <br>
 
-## <a name="append-command"></a>append command
+## <a name="追加命令"></a>追加命令
 
-The append command allows to add string after a line matching given address
+追加命令 在指定地址的行后面增加字符串
 
-**Note** the string used cannot have literal newline character, use escape sequence instead
+**注意** 字符串不能包含换行符,有的话使用转义字符
 
 ```bash
 $ # white-space between a and string is ignored
-$ # same as: sed '2s/$/\nhello/'
+$ # 同: sed '2s/$/\nhello/'
 $ seq 3 | sed '2a hello'
 1
 2
 hello
 3
 
-$ # escape sequences can be used
+$ # 可以使用转移字符
 $ seq 3 | sed '2ahello\nhi'
 1
 2
@@ -2262,7 +2269,7 @@ hi
 3
 ```
 
-* command will apply for all matching addresses
+* 命令将作用于所有匹配的地址
 
 ```bash
 $ seq 5 | sed '/[24]/afoo'
@@ -2275,8 +2282,8 @@ foo
 5
 ```
 
-* `\` is special immediately after `a`, see [sed manual - other commands](https://www.gnu.org/software/sed/manual/sed.html#Other-Commands) for details
-* If escape sequence is needed at beginning of replacement string, use an additional `\`
+* `\`在`a`后是特殊的, see [sed manual - other commands](https://www.gnu.org/software/sed/manual/sed.html#Other-Commands) for details
+* 如果在字符串的前面需要转义字符,需要多加一个`\`
 
 ```bash
 $ seq 3 | sed '2a  foo'
@@ -2302,7 +2309,7 @@ $ seq 3 | sed '2a\\tbar'
 3
 ```
 
-* Since `;` cannot be used to distinguish between string and end of command, use `-e` for multiple commands
+* `;` 不能用于区分是字符还是命令的结束,多个命令用`-e`
 
 ```bash
 $ sed -e '/is/afoobar;s/are/ARE/' poem.txt
@@ -2320,7 +2327,7 @@ foobar
 And so ARE you.
 ```
 
-* Using shell substitution
+* 使用脚本替换
 
 ```bash
 $ text='good day'
@@ -2344,25 +2351,25 @@ $ seq 3 | sed '2aToday is '"$(date +%A)"
 Today is Thursday
 3
 
-$ # multiline command output will lead to error
+$ # 多行输出的命令会导致错误
 $ seq 3 | sed '2a'"$(seq 2)"
 sed: -e expression #1, char 5: missing command
 ```
 
-* See also [stackoverflow - add newline character if last line of input doesn't have one](https://stackoverflow.com/questions/41343062/what-does-this-mean-in-linux-sed-a-a-txt)
+* 见 [stackoverflow - add newline character if last line of input doesn't have one](https://stackoverflow.com/questions/41343062/what-does-this-mean-in-linux-sed-a-a-txt)
 
 <br>
 
-## <a name="adding-contents-of-file"></a>adding contents of file
+## <a name="添加文件内容"></a>添加文件内容
 
 <br>
 
-#### <a name="r-for-entire-file"></a>r for entire file
+#### <a name="r命令插入整个文件"></a>r命令插入整个文件
 
-* The `r` command allows to add contents of file after a line matching given address
-* It is a robust way to add multiline content or if content can have characters that may be interpreted
-* Special name `/dev/stdin` allows to read from **stdin** instead of file input
-* First, a simple example to add contents of one file into another at specified address
+* `r` 命令运行按给出的地址插入文件的内容
+* 这是一个有效的方法加入多行内容
+*特殊的文件名`/dev/stdin`允许从键盘输入
+* 第一,把一个文件插入到另一个特别的文件中
 
 ```bash
 $ cat 5.txt
@@ -2375,7 +2382,7 @@ Violets are blue,
 Sugar is sweet,
 And so are you.
 
-$ # space between r and filename is optional
+$ # r命令和文件名中间的空格是可选的
 $ sed '2r 5.txt' poem.txt
 Roses are red,
 Violets are blue,
@@ -2384,13 +2391,13 @@ five
 Sugar is sweet,
 And so are you.
 
-$ # content cannot be added before first line
+$ # 内容不能在第一行前添加
 $ sed '0r 5.txt' poem.txt
 sed: -e expression #1, char 2: invalid usage of line address 0
 $ # but that is trivial to solve: cat 5.txt poem.txt
 ```
 
-* command will apply for all matching addresses
+* 命令将作用于所有匹配的地址
 
 ```bash
 $ seq 5 | sed '/[24]/r 5.txt'
@@ -2410,7 +2417,7 @@ five
 
 ```bash
 $ text='Good day\nfoo bar baz\n'
-$ # escape sequence like \n will be interpreted when 'a' command is used
+$ # 用'a'命令的时候转义字符如\n 被解释
 $ sed '/is/a'"$text" poem.txt
 Roses are red,
 Violets are blue,
@@ -2420,7 +2427,7 @@ foo bar baz
 
 And so are you.
 
-$ # \ is just another character, won't be treated as special with 'r' command
+$ # \ 是另一个字符,不会被r命令当做特殊字符
 $ echo "$text" | sed '/is/r /dev/stdin' poem.txt
 Roses are red,
 Violets are blue,
@@ -2429,7 +2436,7 @@ Good day\nfoo bar baz\n
 And so are you.
 ```
 
-* adding multiline command output is simple as well
+* 添加多行命令输出也很简单
 
 ```bash
 $ seq 3 | sed '/is/r /dev/stdin' poem.txt
@@ -2442,18 +2449,18 @@ Sugar is sweet,
 And so are you.
 ```
 
-* replacing a line or range of lines with contents of file
-* See also [unix.stackexchange - various ways to replace line M in file1 with line N in file2](https://unix.stackexchange.com/a/396450)
+* 用文件内容替换一行或一个范围
+* 见[unix.stackexchange - various ways to replace line M in file1 with line N in file2](https://unix.stackexchange.com/a/396450)
 
 ```bash
-$ # replacing range of lines
-$ # order is important, first 'r' and then 'd'
+$ # 替换范围
+$ # 顺序很重要,先用'r'插入再用'd'删除
 $ sed -e '/is/r 5.txt' -e '1,/is/d' poem.txt
 five
 1five
 And so are you.
 
-$ # replacing a line
+$ # 替换一行
 $ seq 3 | sed -e '3r /dev/stdin' -e '3d' poem.txt
 Roses are red,
 Violets are blue,
@@ -2462,7 +2469,7 @@ Violets are blue,
 3
 And so are you.
 
-$ # can also use {} grouping to avoid repeating the address
+$ # 也可以使用{} 分组避免重复地址
 $ seq 3 | sed -e '/blue/{r /dev/stdin' -e 'd}' poem.txt
 Roses are red,
 1
@@ -2474,13 +2481,13 @@ And so are you.
 
 <br>
 
-#### <a name="r-for-line-by-line"></a>R for line by line
+#### <a name="R命令逐行插入"></a>R命令逐行插入
 
-* add a line for every address match
+* 为所有匹配的地址添加一行
 * Special name `/dev/stdin` allows to read from **stdin** instead of file input
 
 ```bash
-$ # space between R and filename is optional
+$ # R 和 文件名之间的空格是可选的
 $ seq 3 | sed '/are/R /dev/stdin' poem.txt
 Roses are red,
 1
@@ -2489,7 +2496,7 @@ Violets are blue,
 Sugar is sweet,
 And so are you.
 3
-$ # to replace matching line
+$ # TODO:: to replace matching line
 $ seq 3 | sed -e '/are/{R /dev/stdin' -e 'd}' poem.txt
 1
 2
@@ -2532,25 +2539,25 @@ And so are you.
 
 ## <a name="n-and-n-commands"></a>n and N commands
 
-* These two commands will fetch next line (newline or NUL character separated, depending on options)
+* 这两个命令会取得匹配的下一行(newline or NUL character separated, depending on options)
 
 Quoting from [sed manual - common commands](https://www.gnu.org/software/sed/manual/sed.html#Common-Commands) for `n` command
 
 >If auto-print is not disabled, print the pattern space, then, regardless, replace the pattern space with the next line of input. If there is no more input then sed exits without processing any more commands.
 
 ```bash
-$ # if line contains 'blue', replace 'e' with 'E' only for following line
+$ # 如果当前行包含'blue', 只替换下一行的'e'变成'E'
 $ sed '/blue/{n;s/e/E/g}' poem.txt
 Roses are red,
 Violets are blue,
 Sugar is swEEt,
 And so are you.
 
-$ # better illustrated with -n option
+$ # 用-n选项描述更好
 $ sed -n '/blue/{n;s/e/E/pg}' poem.txt
 Sugar is swEEt,
 
-$ # if line contains 'blue', replace 'e' with 'E' only for next to next line
+$ # 如果当前行包含'blue', 只替换下下一行的'e'变成'E'
 $ sed -n '/blue/{n;n;s/e/E/pg}' poem.txt
 And so arE you.
 ```
@@ -2564,14 +2571,14 @@ Quoting from [sed manual - other commands](https://www.gnu.org/software/sed/manu
 * See also [stackoverflow - apply substitution every 4 lines but excluding the 4th line](https://stackoverflow.com/questions/40229578/how-to-insert-a-line-feed-into-a-sed-line-concatenation)
 
 ```bash
-$ # if line contains 'blue', replace 'e' with 'E' both in current line and next
+$ # 如果当前行包含'blue', 替换两行的'e'变成'E'
 $ sed '/blue/{N;s/e/E/g}' poem.txt
 Roses are red,
 ViolEts arE bluE,
 Sugar is swEEt,
 And so are you.
 
-$ # better illustrated with -n option
+$ # 用-n选项描述更好
 $ sed -n '/blue/{N;s/e/E/pg}' poem.txt
 ViolEts arE bluE,
 Sugar is swEEt,
@@ -2626,15 +2633,15 @@ $ seq 6 | sed 'N;s/\n/ /'
 * See [unix.stackexchange - processing only lines between REGEXPs](https://unix.stackexchange.com/questions/292819/remove-commented-lines-except-one-comment-using-sed) for interesting use case
 
 ```bash
-$ # changing -ve to +ve and vice versa
+$ # 取相反数 changing -ve to +ve and vice versa
 $ cat nums.txt
 42
 -2
 10101
 -3.14
 -75
-$ # same as: perl -pe '/^-/ ? s/// : s/^/-/'
-$ # empty REGEXP section will reuse previous REGEXP, in this case /^-/
+$ # 同: perl -pe '/^-/ ? s/// : s/^/-/'
+$ # 空正则表达式的部分会使用之前的正则
 $ sed '/^-/{s///;b}; s/^/-/' nums.txt
 -42
 2
@@ -2642,8 +2649,8 @@ $ sed '/^-/{s///;b}; s/^/-/' nums.txt
 3.14
 75
 
-$ # same as: perl -pe '/are/ ? s/e/*/g : s/e/#/g'
-$ # if line contains 'are' replace 'e' with '*' else replace 'e' with '#'
+$ # 同: perl -pe '/are/ ? s/e/*/g : s/e/#/g'
+$ # 包含'are'的行'e' 替换成 '*' 没有的替换成'#'
 $ sed '/are/{s/e/*/g;b}; s/e/#/g' poem.txt
 Ros*s ar* r*d,
 Viol*ts ar* blu*,
@@ -2665,7 +2672,7 @@ And so ar* you.
 $ # replace space with underscore only in 3rd column
 $ # ^(([^|]+\|){2} captures first two columns
 $ # [^|]* zero or more non-column separator characters
-$ # as long as match is found, command will be repeated on same input line
+$ # 只要一直有匹配,同一条命令在同一行会重复匹配
 $ echo 'foo bar|a b c|1 2 3|xyz abc' | sed -E ':a s/^(([^|]+\|){2}[^|]*) /\1_/; ta'
 foo bar|a b c|1_2_3|xyz abc
 
@@ -2673,7 +2680,7 @@ $ # use awk/perl for simpler syntax
 $ # for ex: awk 'BEGIN{FS=OFS="|"} {gsub(/ /,"_",$3); print}'
 ```
 
-* example to show difference between `b` and `t`
+* `b` and `t`的区别
 
 ```bash
 $ # whether or not 'R' is found on lines containing 'are', branch will happen
@@ -2718,7 +2725,7 @@ foo:0:0:bar:0:baz
 
 ## <a name="lines-between-two-regexps"></a>Lines between two REGEXPs
 
-* Simple cases were seen in [address range](#address-range) section
+* Simple cases were seen in [地址范围](#地址范围) section
 * This section will deal with more cases and some corner cases
 
 <br>
@@ -2743,9 +2750,9 @@ END
 baz
 ```
 
-First, lines between the two *REGEXP*s are to be printed
+First, lines between the two *正则表达式*s are to be printed
 
-* Case 1: both starting and ending *REGEXP* part of output
+* Case 1: both starting and ending *正则表达式* part of output
 
 ```bash
 $ sed -n '/BEGIN/,/END/p' range.txt
@@ -2760,7 +2767,7 @@ c
 END
 ```
 
-* Case 2: both starting and ending *REGEXP* not part of ouput
+* Case 2: both starting and ending *正则表达式* not part of ouput
 
 ```bash
 $ # remember that empty REGEXP section will reuse previously matched REGEXP
@@ -2772,7 +2779,7 @@ b
 c
 ```
 
-* Case 3: only starting *REGEXP* part of output
+* Case 3: only starting *正则表达式* part of output
 
 ```bash
 $ sed -n '/BEGIN/,/END/{/END/!p}' range.txt
@@ -2785,7 +2792,7 @@ b
 c
 ```
 
-* Case 4: only ending *REGEXP* part of output
+* Case 4: only ending *正则表达式* part of output
 
 ```bash
 $ sed -n '/BEGIN/,/END/{/BEGIN/!p}' range.txt
@@ -2798,9 +2805,9 @@ c
 END
 ```
 
-Second, lines between the two *REGEXP*s are to be deleted
+Second, lines between the two *正则表达式*s are to be deleted
 
-* Case 5: both starting and ending *REGEXP* not part of output
+* Case 5: both starting and ending *正则表达式* not part of output
 
 ```bash
 $ sed '/BEGIN/,/END/d' range.txt
@@ -2809,7 +2816,7 @@ bar
 baz
 ```
 
-* Case 6: both starting and ending *REGEXP* part of output
+* Case 6: both starting and ending *正则表达式* part of output
 
 ```bash
 $ # remember that empty REGEXP section will reuse previously matched REGEXP
@@ -2823,7 +2830,7 @@ END
 baz
 ```
 
-* Case 7: only starting *REGEXP* part of output
+* Case 7: only starting *正则表达式* part of output
 
 ```bash
 $ sed '/BEGIN/,/END/{/BEGIN/!d}' range.txt
@@ -2834,7 +2841,7 @@ BEGIN
 baz
 ```
 
-* Case 8: only ending *REGEXP* part of output
+* Case 8: only ending *正则表达式* part of output
 
 ```bash
 $ sed '/BEGIN/,/END/{/END/!d}' range.txt
@@ -2864,7 +2871,7 @@ $ sed -n '/BEGIN/,/END/{//!p;/END/q}' range.txt
 6789
 ```
 
-* To get last block, reverse the input linewise, the order of *REGEXP*s and finally reverse again
+* To get last block, reverse the input linewise, the order of *正则表达式*s and finally reverse again
 
 ```bash
 $ tac range.txt | sed -n '/END/,/BEGIN/{p;/BEGIN/q}' | tac
@@ -2888,8 +2895,8 @@ c
 
 #### <a name="broken-blocks"></a>Broken blocks
 
-* If there are blocks with ending *REGEXP* but without corresponding starting *REGEXP*, `sed -n '/BEGIN/,/END/p'` will suffice
-* Consider the modified input file where final starting *REGEXP* doesn't have corresponding ending
+* If there are blocks with ending *正则表达式* but without corresponding starting *正则表达式*, `sed -n '/BEGIN/,/END/p'` will suffice
+* Consider the modified input file where final starting *正则表达式* doesn't have corresponding ending
 
 ```bash
 $ cat broken_range.txt
@@ -2930,7 +2937,7 @@ BEGIN
 END
 ```
 
-* If there are multiple starting *REGEXP* but single ending *REGEXP*, the reversing trick comes handy again
+* If there are multiple starting *正则表达式* but single ending *正则表达式*, the reversing trick comes handy again
 
 ```bash
 $ cat uneven_range.txt
@@ -3071,7 +3078,7 @@ five$
 1five$
 ```
 
-* variable/command substitution
+* variable/命令替换
 * See also [stackoverflow - Is it possible to escape regex metacharacters reliably with sed](https://stackoverflow.com/questions/29613304/is-it-possible-to-escape-regex-metacharacters-reliably-with-sed)
 
 ```bash
@@ -3169,7 +3176,7 @@ foo xyz
 
 * and many more... see also
     * [unix.stackexchange - Why does my regular expression work in X but not in Y?](https://unix.stackexchange.com/questions/119905/why-does-my-regular-expression-work-in-x-but-not-in-y)
-    * [stackoverflow - Greedy vs. Reluctant vs. Possessive Quantifiers](https://stackoverflow.com/questions/5319840/greedy-vs-reluctant-vs-possessive-quantifiers)
+    * [stackoverflow - Greedy vs. Reluctant vs. Possessive Quantifiers](https://stackoverflow.com/questions/5319840/greedy-vs-reluctant-vs-possessive-Quantifiers)
     * [stackoverflow - How to replace everything between but only until the first occurrence of the end string?](https://stackoverflow.com/questions/45168607/how-to-replace-everything-between-but-only-until-the-first-occurrence-of-the-end)
     * [stackoverflow - How to match a specified pattern with multiple possibilities](https://stackoverflow.com/questions/43650926/how-to-match-a-specified-pattern-with-multiple-possibilities)
     * [stackoverflow - mixing different regex syntax](https://stackoverflow.com/questions/45389684/cant-comment-a-line-in-my-cnf/45389833#45389833)
@@ -3224,8 +3231,8 @@ real    0m0.073s
     * [stackoverflow - How to select lines between two patterns?](https://stackoverflow.com/questions/38972736/how-to-select-lines-between-two-patterns)
     * [stackoverflow - get lines between two patterns only if there is third pattern between them](https://stackoverflow.com/questions/39960075/bash-how-to-get-lines-between-patterns-only-if-there-is-pattern2-between-them)
         * [unix.stackexchange - similar example](https://unix.stackexchange.com/questions/228699/sed-print-lines-matched-by-a-pattern-range-if-one-line-matches-a-condition)
-* Learn Regular Expressions (has information on flavors other than BRE/ERE too)
-    * [Regular Expressions Tutorial](https://www.regular-expressions.info/tutorial.html)
+* Learn 正则表达式 (has information on flavors other than BRE/ERE too)
+    * [正则表达式 Tutorial](https://www.正则表达式.info/tutorial.html)
     * [regexcrossword](https://regexcrossword.com/)
     * [stackoverflow - What does this regex mean?](https://stackoverflow.com/questions/22937618/reference-what-does-this-regex-mean)
 * Related tools

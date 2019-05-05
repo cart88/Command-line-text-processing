@@ -119,7 +119,7 @@ $ paste -d'\n' <(seq 11 13) <(seq 101 103)
 * Input lines can be passed only as stdin
 
 ```bash
-$ # single column to two columns
+$ # 一列变两列
 $ seq 10 | paste -d, - -
 1,2
 3,4
@@ -127,12 +127,12 @@ $ seq 10 | paste -d, - -
 7,8
 9,10
 
-$ # single column to five columns
+$ # 一列变5列
 $ seq 10 | paste -d: - - - - -
 1:2:3:4:5
 6:7:8:9:10
 
-$ # input redirection for file input
+$ # 从文件输入
 $ paste -d, - - < colors_1.txt
 Blue,Brown
 Purple,Red

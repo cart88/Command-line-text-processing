@@ -2,15 +2,15 @@
 
 **Table of Contents**
 
-* [Simple string search](#simple-string-search)
-* [Case insensitive search](#case-insensitive-search)
-* [Invert matching lines](#invert-matching-lines)
-* [Line number, count and limiting output lines](#line-number-count-and-limiting-output-lines)
-* [Multiple search strings](#multiple-search-strings)
+* [简单字符查找](#简单字符查找)
+* [大小写敏感查找](#大小写敏感查找)
+* [查找不匹配的行](#查找不匹配的行)
+* [行号和限制输出行数](#行号和限制输出行数)
+* [多字符串匹配](#多字符串匹配)
 * [File names in output](#file-names-in-output)
-* [Match whole word or line](#match-whole-word-or-line)
+* [匹配整行](#匹配整行)
 * [Colored output](#colored-output)
-* [Get only matching portion](#get-only-matching-portion)
+* [只显示匹配的部分](#只显示匹配的部分)
 * [Context matching](#context-matching)
 * [Recursive search](#recursive-search)
     * [Basic recursive search](#basic-recursive-search)
@@ -77,7 +77,7 @@ DESCRIPTION
 
 <br>
 
-## <a name="simple-string-search"></a>Simple string search
+## <a name="简单字符查找"></a>简单字符查找
 
 * First specify the search pattern (usually enclosed in single quotes) and then the file input
 * More than one file can be specified or input given from stdin
@@ -98,7 +98,7 @@ $ grep 'so are' poem.txt
 And so are you.
 ```
 
-* If search string contains any regular expression meta characters like `^$\.*[]` (covered later), use the `-F` option or `fgrep` if available
+* 要查找字符串中包含`^$\.*[]` 等特殊字符, 用`-F`选项或者`fgrep`
 
 ```bash
 $ echo 'int a[5]' | grep 'a[5]'
@@ -112,7 +112,7 @@ int a[5]
 
 <br>
 
-## <a name="case-insensitive-search"></a>Case insensitive search
+## <a name="大小写敏感查找"></a>大小写敏感查找
 
 ```bash
 $ grep -i 'rose' poem.txt
@@ -124,10 +124,10 @@ And so are you.
 
 <br>
 
-## <a name="invert-matching-lines"></a>Invert matching lines
+## <a name="查找不匹配的行"></a>查找不匹配的行
 
-* Use the `-v` option to get lines other than those matching the search string
-* Tip: Look out for other opposite pairs like `-l -L`, `-h -H`, opposites in regular expression, etc
+* 用`-v`选项得到不匹配的行
+* TODO: Tip: Look out for other opposite pairs like `-l -L`, `-h -H`, opposites in regular expression, etc
 
 ```bash
 $ grep -v 'are' poem.txt
@@ -143,23 +143,23 @@ $ seq 5 | grep -v '3'
 
 <br>
 
-## <a name="line-number-count-and-limiting-output-lines"></a>Line number, count and limiting output lines
+## <a name="行号和限制输出行数"></a>行号和限制输出行数
 
-* Show line number of matching lines
+* 显示匹配的行号
 
 ```bash
 $ grep -n 'sweet' poem.txt
 3:Sugar is sweet,
 ```
 
-* Count number of matching lines
+* 计算匹配的次数
 
 ```bash
 $ grep -c 'are' poem.txt
 3
 ```
 
-* Limit number of matching lines
+* 限制匹配的行数
 
 ```bash
 $ grep -m2 'are' poem.txt
@@ -169,9 +169,9 @@ Violets are blue,
 
 <br>
 
-## <a name="multiple-search-strings"></a>Multiple search strings
+## <a name="多字符串匹配"></a>多字符串匹配
 
-* Match any
+* 或者匹配
 
 ```bash
 $ # search blue or you
@@ -180,7 +180,7 @@ Violets are blue,
 And so are you.
 ```
 
-If there are lot of search strings, use a file input
+如果有很多要查找的字符,用文件输入
 
 ```bash
 $ printf 'rose\nsugar\n' > search_strings.txt
@@ -188,16 +188,16 @@ $ cat search_strings.txt
 rose
 sugar
 
-$ # -f option accepts file input with search terms in separate lines
+$ # -f选项接收查找单词的文件，一行代表一个短语
 $ grep -if search_strings.txt poem.txt
 Roses are red,
 Sugar is sweet,
 ```
 
-* Match all
+* 并且匹配
 
 ```bash
-$ # match line containing both are & And
+$ # 匹配既有are 又有 And的行
 $ grep 'are' poem.txt | grep 'And'
 And so are you.
 ```
@@ -205,7 +205,7 @@ And so are you.
 <br>
 
 ## <a name="file-names-in-output"></a>File names in output
-
+TODO:
 * `-l` to get files matching the search
 * `-L` to get files not matching the search
 * `grep` skips the rest of file once a match is found
@@ -239,11 +239,11 @@ sugar
 
 <br>
 
-## <a name="match-whole-word-or-line"></a>Match whole word or line
+## <a name="匹配整行"></a>匹配整行
 
-* Word search using `-w` option
-    * word constitutes of alphabets, numbers and underscore character
-* For example, this helps to distinguish `par` from `spar`, `part`, etc
+* 单词查找用`-w`选项
+    * 单词用字幕,数字,下划线组成
+* 例如,这样可用来区分`par` 和`spar`, `part`, etc
 
 ```bash
 $ printf 'par value\nheir apparent\n' | grep 'par'
@@ -257,7 +257,7 @@ $ printf 'scare\ncart\ncar\nmacaroni\n' | grep -w 'car'
 car
 ```
 
-* Another useful option is `-x` to match only complete line, not anywhere in the line
+* `-x`选项用于匹配整行
 
 ```bash
 $ printf 'see my book list\nmy book\n' | grep 'my book'
@@ -275,12 +275,12 @@ car
 
 ## <a name="colored-output"></a>Colored output
 
-* Highlight search strings, line numbers, file name, etc in different colors
-    * Depends on color support in terminal being used
-* options to `--color` are
-    * `auto` when output is redirected (another command, file, etc) the color information won't be passed
-    * `always` when output is redirected (another command, file, etc) the color information will also be passed
-    * `never` explicitly specify no highlighting
+* 高亮查找字符串,行号,文件名等用不同的颜色表示
+    * 依赖于终端的颜色支持
+* `--color`的选项有
+    * `auto` 当输出被重定向到(其他命令,文件,等 )颜色不被传递过去
+    * `always`  当输出被重定向到(其他命令,文件,等 )颜色被传递过去
+    * `never` 明确的指定不需高亮
 
 ```bash
 $ grep --color=auto 'blue' poem.txt
@@ -291,7 +291,7 @@ Violets are blue,
 
 ![grep color output](./images/color_option.png)
 
-* Example to show difference between `auto` and `always`
+* `auto` and `always` 的显示方式的区别
 
 ```bash
 $ grep --color=auto 'blue' poem.txt > saved_output.txt
@@ -304,10 +304,10 @@ Violets are ^[[01;31m^[[Kblue^[[m^[[K,
 
 <br>
 
-## <a name="get-only-matching-portion"></a>Get only matching portion
+## <a name="只显示匹配的部分"></a>只显示匹配的部分
 
-* The `-o` option to get only matched portion is more useful with regular expressions
-* Comes in handy if overall number of matches is required, instead of only line wise
+* `-o`选项只返回匹配的部分
+* 如果只要匹配的次数很方便
 
 ```bash
 $ grep -o 'are' poem.txt
@@ -315,12 +315,12 @@ are
 are
 are
 
-$ # -c only gives count of matching lines
+$ # -c 只返回匹配的行数
 $ grep -c 'e' poem.txt
 4
 $ grep -co 'e' poem.txt
 4
-$ # so need another command to get count of all matches
+$ #用另一个命令得到匹配的次数
 $ grep -o 'e' poem.txt | wc -l
 9
 ```
@@ -329,7 +329,7 @@ $ grep -o 'e' poem.txt | wc -l
 
 ## <a name="context-matching"></a>Context matching
 
-* The `-A`, `-B` and `-C` options are useful to get lines after/before/around matching line respectively
+* `-A`, `-B`  `-C`选项用来得到匹配行的后/前/环绕的行
 
 ```bash
 $ grep -A1 'blue' poem.txt
@@ -344,7 +344,7 @@ Violets are blue,
 Sugar is sweet,
 ```
 
-* If there are multiple non-adjacent matching segments, by default `grep` adds a line `--` to separate them
+* 如果有多行不相邻的匹配，`grep` 添加`--`分割
 
 ```bash
 $ seq 29 | grep -A1 '3'
@@ -358,7 +358,7 @@ $ seq 29 | grep -A1 '3'
 24
 ```
 
-* Use `--no-group-separator` option if the separator line is a hindrance, for example feeding the output of `grep` to another program
+* 用`--no-group-separator`选项如果不要分隔符
 
 ```bash
 $ seq 29 | grep --no-group-separator -A1 '3'
@@ -370,7 +370,7 @@ $ seq 29 | grep --no-group-separator -A1 '3'
 24
 ```
 
-* Use `--group-separator` to specify an alternate separator
+* 用 `--group-separator` 指定另一个分割符
 
 ```bash
 $ seq 29 | grep --group-separator='*****' -A1 '3'
